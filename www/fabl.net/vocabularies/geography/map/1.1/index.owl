@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!DOCTYPE uridef[
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+  <!ENTITY geom "http://fabl.net/vocabularies/geometry/1.1/">
+  <!ENTITY geom2d "http://fabl.net/vocabularies/geometry2d/1.1/">
+  <!ENTITY geo "http://www.w3.org/2003/01/geo/wgs84_pos#">
+  <!ENTITY rdfmap "http://fabl.net/vocabularies/geography/map/1.1/">
+]>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:owl="http://www.w3.org/2002/07/owl#"
+>
+    <owl:Ontology rdf:about="&geom2d;index.owl"/> 
+
+  <owl:Ontology rdf:about="&rdfmap;1.1">
+     <rdfs:label>RDFMap</rdfs:label>
+       <owl:imports rdf:resource="&geom2d;index.owl"/> 
+   
+  </owl:Ontology>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;boundedBy">
+<rdfs:domain rdf:resource="&geo;SpatialThing"/>
+<rdfs:range rdf:resource="&geom2d;Shape"/>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;envelops">
+<owl:inverseOf rdf:resource="&rdfmap;boundedBy"/>
+</owl:ObjectProperty>
+
+<owl:Class  rdf:about="&geo;SpatialThing"/>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;edgeOf">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:domain rdf:resource="&geo;SpatialThing"/>
+<rdfs:range rdf:resource="&geom2d;Shape"/>
+<rdfs:comment>Asserts tthat the edge or boundary of a geo:SpatialThing (such as a park or body of water) is a specified geom2d:Shape.</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;isEdgeOf">
+<owl:inverseOf rdf:resource="&rdfmap;edgeOf"/>
+</owl:ObjectProperty>
+
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;centerLineOf">
+<rdfs:domain rdf:resource="&geo;SpatialThing"/>
+<rdfs:range rdf:resource="&geom2d;Shape"/>
+<rdfs:comment>Asserts that the center line of a linear feature, such as a road or river, is a specified geom2d:Shape.</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;isCenterLineOf">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<owl:inverseOf rdf:resource="&rdfmap;centerLineOf"/>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;srs">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:comment>Spatial reference system</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:Class  rdf:about="&rdfmap;Map"/>
+
+<owl:ObjectProperty rdf:about="&rdfmap;basemap">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:domain rdf:resource="&rdfmap;Map"/>
+<rdfs:comment>Background image</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;thumbnail">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:domain rdf:resource="&rdfmap;Map"/>
+<rdfs:comment>thumbnail specifies a small image used to denote the map in web documents.</rdfs:comment>
+</owl:ObjectProperty>
+
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;coverage">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:domain rdf:resource="&rdfmap;Map"/>
+<rdfs:range rdf:resource="&geom2d;Box"/>
+<rdfs:comment>The coverage of a map specifies the range of points on the earth that the map covers, using the map's srs.</rdfs:comment>
+</owl:ObjectProperty>
+
+
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;extent">
+<rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:domain rdf:resource="&rdfmap;Map"/>
+<rdfs:range rdf:resource="&geom2d;Box"/>
+<rdfs:comment>The extent is the box representing the map's viewport onto the canvas.</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;canvas">
+<rdfs:range rdf:resource="&rdfmap;Map"/>
+<rdfs:comment>This property is an alternative to srs, and is applicable to any located entity (such as a Point or an RSS channel or item, or even another Map).
+  If a resource has the canvas property, the values of the x and y properties of its contents are interpreted in the canvas coordinates of the map that is the value of canvas.
+</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&rdfmap;useMap">
+<rdfs:range rdf:resource="&rdfmap;Map"/>
+<rdfs:comment>The useMap property asserts that its value is a map that can be used to depict its subject.
+For example, an RSS channel might have a useMap property whose value is a map recommended for depicting the contents of the channel.</rdfs:comment>
+</owl:ObjectProperty>
+
+
+</rdf:RDF>

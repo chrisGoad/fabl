@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE uridef[
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">  
+  <!ENTITY geo "http://www.w3.org/2003/01/geo/wgs84_pos#">
+  <!ENTITY geom "http://fabl.net/vocabularies/geometry/1.1/">
+]>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:owl="http://www.w3.org/2002/07/owl#"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  
+  
+  <owl:Ontology rdf:about="http://fabl.net/vocabularies/geometry/1.1">
+     <rdfs:label>RDF Geometry</rdfs:label>
+ <rdfs:comment>created 2004-10-27; author Chris Goad cagoad@yahoo.com </rdfs:comment>
+  
+  </owl:Ontology>
+
+
+
+<owl:Class  rdf:about="http://fabl.net/vocabularies/geometry/1.1/Shape">
+<rdfs:comment>The class of all geometrical forms</rdfs:comment>
+</owl:Class>
+
+<owl:DatatypeProperty rdf:about="&geom;minDimension">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+
+<rdfs:range rdf:resource="&xsd;int"/>
+<rdfs:comment>The minimum dimension of points in the extension of a Shape</rdfs:comment>
+</owl:DatatypeProperty>
+<owl:DatatypeProperty rdf:about="&geom;maxDimension">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;int"/>
+<rdfs:comment>The maximum dimension of points in the extension of a Shape</rdfs:comment>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="&geom;x">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom;y">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom;z">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+<owl:Class  rdf:about="&geom;Point">
+<rdfs:subClassOf rdf:resource="&geom;Shape"/>
+</owl:Class>
+<owl:Class  rdf:about="&geom;Transformation">
+<rdfs:comment>The class of all functions with geom:Point as domain and range</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="&rdf;Seq"/>
+<owl:ObjectProperty rdf:about="&geom;elements"/>
+<owl:Class  rdf:about="&geom;Group">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;elements"/>
+<owl:allValuesFrom rdf:resource="&rdf;Seq"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;elements"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom;Shape"/>
+<rdfs:comment>A collection of geom:Shapes</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom;Curve">
+<rdfs:subClassOf rdf:resource="&geom;Shape"/>
+<rdfs:comment>The range of a continuous function from a real interval to geom:Point</rdfs:comment>
+</owl:Class>
+
+<owl:ObjectProperty rdf:about="&geom;end0"/>
+<owl:ObjectProperty rdf:about="&geom;end1"/>
+
+
+<owl:Class  rdf:about="&geom;CurveSegment">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:allValuesFrom rdf:resource="&geom;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end1"/>
+<owl:allValuesFrom rdf:resource="&geom;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end1"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom;Curve"/>
+<rdfs:comment>A geom:Curve with distinct end points</rdfs:comment>
+</owl:Class>
+<owl:Class  rdf:about="&geom;ClosedCurve">
+<rdfs:subClassOf rdf:resource="&geom;Curve"/>
+<rdfs:comment>A one-dimensional loop of points</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom;LineSegment">
+<rdfs:subClassOf rdf:resource="&geom;CurveSegment"/>
+<rdfs:comment>A straight line segment</rdfs:comment>
+</owl:Class>
+
+<owl:ObjectProperty rdf:about="&geom;points"/>
+
+
+<owl:Class  rdf:about="&geom;Polyline">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;points"/>
+<owl:allValuesFrom rdf:resource="&rdf;Seq"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;points"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom;Curve"/>
+<rdfs:comment>A piecewise linear curve</rdfs:comment>
+</owl:Class>
+
+
+
+<owl:DatatypeProperty rdf:about="&geom;xmin">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom;xmax">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom;ymin">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom;ymax">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+
+<owl:DatatypeProperty rdf:about="&geom;zmin">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom;zmax">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:Class  rdf:about="&geom;Box">
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;xmin"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;xmax"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;ymin"/>
+<owl:maxCardinality rdf:datatype="&xsd;int">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;ymax"/>
+<owl:maxCardinality rdf:datatype="&xsd;int">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;zmin"/>
+<owl:maxCardinality rdf:datatype="&xsd;int">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;zmax"/>
+<owl:maxCardinality rdf:datatype="&xsd;int">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom;Shape"/>
+<rdfs:comment>Points lying within specified bounds on coordinates</rdfs:comment>
+</owl:Class>
+<owl:ObjectProperty rdf:about="&geom;center"/>
+<owl:DatatypeProperty rdf:about="&geom;radius"/>
+<owl:ObjectProperty rdf:about="&geom;boundary"/>
+<owl:ObjectProperty rdf:about="&geom;direction"/>
+
+</rdf:RDF>

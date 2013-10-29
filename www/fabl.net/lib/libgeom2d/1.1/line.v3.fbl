@@ -1,0 +1,112 @@
+
+
+// Lines (infinite)
+
+
+
+geom2d:Line function mkLine(double u,v,w)
+{
+  var geom2d:Line rs;
+   rs = new(geom2d:Line);
+   rs . geom2d:u = u;
+   rs . geom2d:v = v;
+   rs . geom2d:w = w;
+   return rs;
+}
+
+
+geom2d:Line function mkLine(geom2d:Point nrm,double w)
+{
+  var geom2d:Line rs;
+   rs = new(geom2d:Line);
+   rs . geom2d:u = nrm.geom:x;
+   rs . geom2d:v = nrm.geom:y;
+   rs . geom2d:w = w;
+   return rs;
+}
+
+// p = point n = direction
+
+geom2d:Line function mkLine_internal1( geom2d:Point p,geom2d:Point  n)
+{
+ return mkLine(n, - n*p); 
+}
+          
+
+void function times(string s,geom2d:Line x)
+{
+
+  writeTo(s,'[geom2d:Line ',x.geom2d:u,',',x.geom2d:v,',',x.geom2d:w,']');
+}
+
+
+geom2d:Line function unary_minus( geom2d:Line p)
+{ return mkLine(-(p.geom2d:u),-(p.geom2d:v), -(p.geom2d:w));
+}   
+
+
+geom2d:Line function mkLine( geom2d:Point p1, ip2)
+{
+var  geom2d:Point n,p2;
+    if (aequal(p1,ip2)) // any line through p1 will do
+      p2= p1 + mkPoint(0,1);
+	else p2 = ip2;
+    n = normalize(p2 - p1);	
+	return mkLine_internal1(p1, mkPoint(n.geom:y, -n.geom:x));
+}
+
+/*__C__*/
+/* OPTIMIZE */
+/*__E__*/
+
+geom2d:Line function mkLine(geom2d:LineSegment sg)
+{
+   return mkLine(sg.geom:end0~geom2d:Point,sg.geom:end1~geom2d:Point);
+}
+
+
+
+
+double function distance( geom2d:Point p, geom2d:Line l)
+{ 
+   return p.geom:x * l.geom2d:u + p.geom:y * l.geom2d:v + l.geom2d:w;
+}
+
+
+geom2d:Point function normal(geom2d:Line ln)
+{
+   return mkPoint(ln.geom2d:u,ln.geom2d:v);
+}
+
+
+
+// returns nul if the intersection is far away
+
+geom2d:Point function intersect( geom2d:Line a, b)  
+{
+var  double x, y, d;
+	d = a.geom2d:u * b.geom2d:v - a.geom2d:v * b.geom2d:u;
+
+ //   d = anr.geom:x * bnr.geom:y - anr.geom:y * bnr.geom:x;
+    if (azero(d)) 
+       return nil~geom2d:Point; // parallel lines
+    y = (a.geom2d:w * b.geom2d:u - a.geom2d:u * b.geom2d:w) / d;  
+//    y = (a.wc * bnr.geom:x - anr.geom:x * b.wc) / d;  
+    if (azero(a.geom2d:u)) 
+         x = - (b.geom2d:v * y + b.geom2d:w) / b.geom2d:u;
+    else x = - (a.geom2d:v * y + a.geom2d:w) / a.geom2d:u;
+    return mkPoint(x, y);
+}
+
+
+
+geom2d:Point function nearestPoint(geom2d:Line iln,geom2d:Point p)
+{
+   var geom2d:Point lv,n,np,double lvd,w;
+   n = normal(iln);
+   w = iln.geom2d:w;
+   np = -w * n;
+   lv = mkPoint(n.geom:y,-n.geom:x);// vector along the line
+   lvd = lv * p;
+   return np + lvd * lv;
+}

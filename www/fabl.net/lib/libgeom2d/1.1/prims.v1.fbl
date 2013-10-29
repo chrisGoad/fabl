@@ -1,0 +1,70 @@
+
+// a few primitive shapes using polylines
+
+
+
+
+geom2d:Shape function mkRectangle(double wd,double ht,boolean polygon)
+{
+   var double hwd,hht,geom2d:Point p0,SeqOf(geom2d:Point) pnts;
+   hwd = 0.5 * wd;
+   hht = 0.5 * ht;
+   p0 = mkPoint(-hwd,-hht);
+   pnts = [p0,mkPoint(hwd,-hht),mkPoint(hwd,hht),mkPoint(-hwd,hht),p0];
+   if (polygon) return mkPolygon(pnts);
+   return mkPolyline(pnts);
+}
+
+// default to polygon
+geom2d:Shape function mkRectangle(double wd,double ht)
+{
+  return mkRectangle(wd,ht,true);
+}
+
+geom2d:Shape function mkRectangle(geom2d:Point cnt,double wd,double ht,boolean polygon)
+{
+   var double hwd,hht,geom2d:Point p0,SeqOf(geom2d:Point) pnts;
+   hwd = 0.5 * wd;
+   hht = 0.5 * ht;
+   p0 = cnt + mkPoint(-hwd,-hht);
+   pnts = [p0,cnt + mkPoint(hwd,-hht),cnt + mkPoint(hwd,hht),cnt + mkPoint(-hwd,hht),p0];
+   if (polygon) return mkPolygon(pnts);
+   return mkPolyline(pnts);
+}
+
+   
+geom2d:Shape function mkRectangle(geom2d:Point cnt,double wd,double ht)
+{
+  return mkRectangle(cnt,wd,ht,true);
+}
+
+//equilateral, centered at 0
+var sin60 = sin(dtor * 60);
+
+geom2d:Shape function mkTriangle(double sc,boolean polygon)
+{
+   var  double hsc,hy,geom2d:Point p0,SeqOf(geom2d:Point) pnts;
+   hsc = sc * 0.5;
+   hy = sc * sin60 - hsc;
+   p0 = mkPoint(-hsc,-hsc);
+   pnts = [p0,mkPoint(hsc,-hsc),mkPoint(0,hy),p0];
+   if (polygon) return mkPolygon(pnts);
+   return mkPolyline(pnts);
+}
+
+
+geom2d:Shape function mkTriangle(double sc)
+{
+   return mkTriangle(sc,true);
+}
+
+
+
+geom2d:Shape function mkSquare(double sc)
+{
+   return mkRectangle(sc,sc,true);
+}
+
+
+
+

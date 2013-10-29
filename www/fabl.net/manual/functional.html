@@ -1,0 +1,127 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Functional Values</span></center><p style="height:1em"></p>Functions, like types, are first class values in Fabl.  An expression of the
+form<p>
+<pre class=shortpre>&lt;function-name&gt;[&lt;Type<sub>1</sub>&gt;,&lt;Type<sub>2</sub>&gt; ... &lt;Type<sub>n</sub>&gt;]</pre><p>
+returns the function, if any, with name <strong>&lt;function-name&gt;</strong>
+and input types <strong>&lt;Type<sub>1</sub>&gt; ... &lt;Type<sub>n</sub>&gt;</strong> For
+example:<p>
+
+<pre class=longpre>
+int function twice(int n){return n+n}
+var fnv = twice[int];
+fnv(4);
+-->8
+
+SeqOf(int) function mapOver(SeqOf(int) vls,Function(int,int) fn)
+{
+var SeqOf(int) rs,int ln,i;
+ln = length(vls);
+rs = new(SeqOf(int));
+for (i=0;i&lt;ln;i++) push(rs,fn(vls[i]));
+return rs;
+}
+
+mapOver([1,2,3],fnv);
+-->[2,4,6]
+</pre>
+
+<a name="supplyargument">
+<p class="subheading">supplyArgument</p>
+</a>
+<p>The function</p><a name="supplyArgument_macro">
+<p class="fablfunction">&lt;SupFunType&gt; supplyArgument(&lt;FunType&gt; fn,&lt;Type0&gt; val)
+</p></a>
+returns  the function <b>sfn</b> that results from supplying <b>val</b> as the fixed  value of the first argument to
+<b>fn</b>; <b>sfn</b> takes one fewer argument than <b>fn</b>.  Here is an example:</p>
+
+<pre>
+install(namespace('geom'));
+install(namespace('geom2d'));
+install(namespace('libgeom2d'));
+push(path,namespace('libgeom2d'));
+
+
+var p0 = mkPoint(1,2);
+
+var distanceFromP0 = supplyArgument(distance[geom2d:Point,geom2d:Point],p0);
+
+distanceFromP0(mkPoint(3,2));
+--&gt;2
+</pre>
+
+<p>As of version 2.0.11, the supplyArgument primitive cannot be iterated. So, for example:</p>
+
+<pre>
+supplyArgument(distanceFromP0,mkPoint(4,5));
+</pre>
+
+yields the message;
+
+<pre>
+--&gt;Not yet: iterated supplyArgument
+</pre>
+
+</div>
+</body>
+</html>

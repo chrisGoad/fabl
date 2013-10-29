@@ -1,0 +1,256 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Dot ops</span></center><p style="height:1em"></p>
+<p>Fabl uses "dot" syntax for accessing and setting properties.  The fact that RDF allows 
+multiple values per property makes it convenient to distinguish  two kinds of property access:
+single-valued access, represtented by one dot, and multi-valued access, represented by two dots.
+Here are the details:
+</p>
+
+<p class="subheading">One dot</p>
+<p> 
+If <b>R</b> is a resource, and <b>P</b>  a  property,
+<b>R.P</b> is one of the values of <b>P</b> on <b>R</b> (ie one of the values <b>V</b> of triples of the form <b>&lt;R,P,V&gt;</b>). If 
+<b>P</b> is a functional property,
+then there can only be one value, and <b>R.P</b> is that value. Otherwise, the value of the most recently
+added triple <b>&lt;R,P,V&gt;</b> is selected. If <b>R.P</b> has no value, then the Fabl construct representing 
+an undefined result, <a href="nill.html"><b>nil</b></a>, is returned.</p>
+
+<p>Similarly, <b>R.P=V</b> sets the unique value of <b>P</b> on <b>R</b> to be <b>V</b>; that is, it replaces any values <b>P</b> may 
+previously
+have had on
+<b>R</b> by <b>V</b>.</p>
+
+<p class="subheading">Two dots</p>
+<p><b>R..P</b> evaluates to a sequence containing all of the
+values of <b>P</b> on <b>R</b> (see the <a href="sequence.html">section</a> on sequences). If there
+is one value, a sequence is still returned - a sequence of length one in this case.  </p>
+
+
+<p><b>R..P=V</b> <i>adds</i> <b>V</b> to the current set of values of <b>P</b> on <b>R</b>; that is, it adds the triple
+<b>&lt;R,P,V&gt;</b>.</p>
+
+
+<p>If <b>P</b> is known to have only one value, either because <b>P</b> is a functional property, or because the type <b>C</b> of
+<b>R</b> restricts <b>P</b> to have only one value on members of <b>C</b>, then <b>R..P</b> takes this into account, and replaces
+the value rather than adding to the current value set.</p>
+
+
+
+<p><b>Examples</b></p>
+
+<pre class=longpre>
+allocate("ex:R0");
+allocate("ex:P0",Property);
+ex:R0.ex:P0 = "abc";
+</pre>
+
+
+<p>adds the following triple to the Fabl triple store:</p>
+
+<pre class=longpre>
+&lt;http://example.org/R0,http://example.org/P0, "abc" &gt;
+</pre>
+
+after removing any existing triples of the form</p>
+
+<pre class=shortpre>
+ &lt;http://example.org/R0,http://example.org/P0,X&gt;
+</pre>
+
+
+<p>And then,</p>
+
+<pre class=longpre>
+ex:R0.ex:P0;
+-->abc
+</pre>
+
+<p>continuing the example:</p>
+
+<pre>
+ex:R0.ex:P0 = "def";
+ex:R0.ex:P0
+-->def
+</pre>
+
+<p>Note that the existing value was replaced. However,</p>
+
+<pre>
+ex:R0..ex:P0 = "hij";
+ex:R0..ex:P0
+-->[def,hij]
+</pre>
+
+
+
+<p class="subheading">Typed properties</p>
+
+<p><b>rdfs:range</b> is a property of properties that asserts the type  of values that a  property can take on.</p>
+ For example:<p>
+
+
+<pre class=longpre>
+allocate('ex:intP0',owl:FunctionalProperty);
+ex:intP0.rdfs:range = int;
+</pre><p>
+
+This asserts that the functional property <b>ex:intP0</b> can only assume <b>ints</b> as value.
+Then expressions of the form</p>
+
+<pre>
+R.ex:intP0
+</pre>
+
+<p>are assigned the type <b>int</b> by Fabl.</p>
+
+<p>An attempt to assign a value of the wrong type generates an error:</p>
+
+<pre class=longpre>
+ex:R0.ex:intP0 = 'example';
+--> ERROR
+--> Could not coerce example to xsd:int
+</pre>
+
+<p>but</p>
+
+<pre class=longpre>
+ex:R0.ex:intP0 = 5;
+ex:R0.ex:intP0 = ex:R0.ex:intP0 + 3;
+ex:R0.ex:intP0;
+--> 8
+</pre>
+<a name="bitfield">
+<p class="subheading">Bitfield properties</p>
+</a>
+
+<p>For compact storage Fabl (like most programming languages) supports the representation
+of a boolean property as a single bit within a word.  The function,</p><a name="defineBitField_class_property_property_int">
+<p class="fablfunction">void defineBitField(Class cls,Property booleanprop,Property intprop,int n)
+</p></a>
+<p>asserts that for objects of class <b>cls</b>, the value of the boolean property <b>booleanprop</b>
+is represented by the value of the <b>n</b>th bit within the value of the integer property
+<b>intprop</b>. Here is an example:</p>
+
+<pre>
+allocate('ex:intP0',owl:FunctionalProperty);
+ex:intP0.rdfs:range = int;
+
+allocate('ex:booleanP0',owl:FunctionalProperty);
+ex:booleanP0.rdfs:range = boolean;
+
+defineBitField(Resource,ex:booleanP0,ex:intP0,3);
+
+var uu = new(Resource);
+
+uu.ex:booleanP0 = true;
+uu.ex:intP0;
+--&gt;8
+uu.ex:booleanP0;
+--&gt;true
+
+</pre>
+
+
+
+<p class="subheading">Low level triple manipulation</p>
+
+<p>As explained just above, use of the dot syntax invokes Fabl's type analysis machinery; 
+an expression
+of the form <b>x.P</b> or <b>x..P</b> will be assigned a type based on what is known
+about the type of <b>x</b> and the restrictions on <b>P</b>. The following lower level
+operations are also available - operations which ignore such type information as may
+be available.  <b>set</b> and <b>assert</b> should be used with care, since they can create
+triples that are inconsistent with assertions made elsewhere. The function</p><a name="fget_ob_property">
+<p class="fablfunction">Resource fget(Resource R,Property P)
+</p></a>
+<p>resembles <b>R.P</b> in effect: it returns the most recently added value of <b>P</b>
+on <b>R</b>, or <b>nil</b> if there is no such value.</p><a name="mget_ob_property">
+<p class="fablfunction">SeqOf(Resource) mget(Resource R,Property P)
+</p></a>
+<p>resembles <b>R..P</b> in effect: it returns the sequence of all  values of <b>P</b>
+on <b>R</b>.</p><a name="set_ob_property_ob">
+<p class="fablfunction">Binding set(Resource R,Property P,Resource V)
+</p></a>
+<p>resembles <b>R.P=V</b> in effect: it replaces whatever
+values <b>P</b> may have had on
+<b>R</b> by <b>V</b>. <b>set</b> has variants for <b>int</b> and <b>double</b> values:</p><a name="set_ob_property_int">
+<p class="fablfunction">Binding set(Resource R,Property P,int V)
+</p></a>
+<a name="set_ob_property_double">
+<p class="fablfunction">Binding set(Resource R,Property P,double V)
+</p></a>
+<p>The function</p><a name="assert_ob_property_ob">
+<p class="fablfunction">Binding assert(Resource R,Property P,Resource V)
+</p></a>
+<p>resembles <b>R..P=V</b> in effect: it adds <b>V</b> to the set of values
+possessed by <b>P</b> on <b>R</b>.
+<b>assert</b> has variants for <b>int</b> and <b>double</b> values:</p><a name="assert_ob_property_int">
+<p class="fablfunction">Binding assert(Resource R,Property P,int V)
+</p></a>
+<a name="assert_ob_property_double">
+<p class="fablfunction">Binding assert(Resource R,Property P,double V)
+</p></a>
+</div>
+</body>
+</html>

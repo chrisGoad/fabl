@@ -1,0 +1,1589 @@
+<html>
+<head>
+<title>Describing Computation within RDF</title>
+
+</head>
+<body>
+
+<center><h2> Describing  Computation within RDF </h2><br>
+Chris Goad<br>
+<i>Map Bureau<br>
+10 Sixth Street, Suite 108<br>
+Astoria, OR 97103<br>
+<a href="mailto:cg@mapbureau.com">cg@mapbureau.com</a><br><br></i>
+Presented at the <br><a href = "http://www.semanticweb.org/SWWS/">International 
+Semantic Web Working Symposium</a>
+
+</center>
+
+
+<p>
+<TABLE BORDER = 0 WIDTH=100% CELLPADDING="10" CELLSPACING="0">
+<TR>
+<TD></TD>
+<TD ALIGN="CENTER" VALIGN="MIDDLE" WIDTH=500>
+<DIV ALIGN="LEFT">
+<i>
+<b>Abstract.</b> A programming language is described
+which is built within RDF.
+Its code, functions, and classes are formalized as RDF resources.
+Programs may be written using standard RDF syntax, or in a conventional
+JavaScript&#150;based syntax
+which is translated to RDF.
+RDF constitutes not only the means of expression, but also the subject matter of programs:
+the native objects and classes of the language
+are RDF resources and DAML+OIL classes,
+respectively.  The formalization of computation within RDF allows
+active content to be integrated seamlessly into RDF  repositories,
+and provides a programming environment which simplifies
+the manipulation of RDF when compared to use of a conventional language via an API. The name of the language is "Fabl".<p>
+</i>
+</DIV>
+</TD>
+<TD></TD>
+</TR>
+</TABLE>
+</CENTER>
+ <p>
+
+
+<b>1. Introduction</b><p>
+
+Fabl<sup><a href="#footnote1">1</a></sup>  is a programming language which is built within RDF[<a href="http://www.w3.org/TR/REC-rdf-syntax/">1</a>]. 
+The constituents of 
+the language - its code, functions, and classes -  are formalized as RDF resources,
+as is the data over which
+computation takes place.  This means that programs reside within
+the world of RDF content rather than
+being relegated to a separate realm connected to RDF via an API.
+The starting point for the formalization is 
+DAML+OIL[<a href="http://www.daml.org/2001/03/daml+oil-index">2</a>].<p>
+
+
+The language provides an efficient
+imperative programming framework for the RDF domain. 
+Programs may be expressed as RDF
+objects using standard RDF syntax, or via a conventional syntax which might be described
+as JavaScript<sup><a href="#footnote2">2</a></sup> enhanced with types and qualified property names.  The language
+is designed to be easy to learn for
+programmers familiar with the conventional JavaScript/HTML/XML/DOM web&#150;programming model.
+In fact, the conceptual cleanliness of RDF makes the language and its semantics far
+simpler than this conventional model. The  initial <a href="#implementation">implementation</a>
+is similar in runtime efficiency to other scripting environments.<p>
+
+As a computational formalism for RDF, the neighboring points of comparison 
+for Fabl are the RDF APIs 
+(eg [<a href="http://www.mozilla.org/rdf/back-end-architecture.html">3</a>],
+[<a href = "http://www-uk.hpl.hp.com/people/bwm/rdf/jena/index.htm">4</a>]), in which computation
+is expressed in conventional ways, but the subject matter of the
+computation is expressed in RDF.
+Fabl has several advantages over APIs:<p>
+
+<ol>
+<li> Simplicity of programming <br>
+<li> Functions and programs can be managed, inspected, manipulated, and annotated
+in the same manner as any other RDF resources;
+they are first&#150;class citizens of the RDF world <br>
+
+<li>Fabl's type system exploits the RDF
+property&#150;centric style. This yields a  system of a kind different, and in 
+some ways more expressive and flexible, than those found in 
+the main thread of object&#150;oriented type systems running from Simula through 
+C++, Java, C#, and Curl.<br>
+<li> Fabl programs are formalized within RDF in a manner that provides an open framework for 
+extension of the language.
+The implementation of Fabl is, with the exception of a few low level utilities, written
+in Fabl itself.  Further, the process by which programs are analyzed and converted into
+an efficiently executable form can be extended by addition of new RDF content.
+This means that extension 
+of Fabl to include new language facilities, such as new  control structures, new syntax,
+or  new typing systems built on different principles can all be carried out
+in the RDF style: by extending the base of RDF files which describe the language.<p>
+</ol>
+
+
+Although Fabl defines a particular (albeit, extensible) textual format for programs on the one hand, and
+implements a particular byte&#150;code and virtual machine for interpretation on the other, the core 
+of the design is its formalism  for describing imperative computation
+<i>as</i> RDF.  This integrates computation into the RDF realm of 
+distributed semantic description,  decoupled  from
+any particular source language and from any particular execution technique.
+Concretely, active entities, from simple
+spreadsheets to complex simulations,  can be formalized in RDF,
+and made available to any agent that has a use for them, 
+independent of the language (or graphical interface) from which they 
+were created.
+<p>
+
+Whether or not the  particular formalism introduced here is the right one,
+RDF can and should be used as a vehicle for 
+representing computation as well as passive content. 
+If nothing else, Fabl shows 
+the practicality of this idea.<p>
+<br><p>
+
+<b>2. An Application </b><p>
+
+Our initial Fabl application illustrates one way in which the 
+integration of computation with RDF facilitates the development 
+of active RDF content. We have defined relatively simple 
+ontologies for geography (themed maps, as in GIS), and 
+for events located in a geographical context. 
+This geographical and historical information is depicted by 
+interactive web-delivered maps in the Macromedia Flash format 
+(see our web site[<a href="http://www.mapbureau.com/">5</a>] for examples). 
+The active aspect of our RDF repository consists primarily of 
+handlers which generate interactive maps from the underlying 
+geographical and historical information, and which maintain 
+consistency between the data and its depiction as changes are 
+made. The handlers are RDF resources and their relationship to 
+other data is expressed by RDF statements. 
+Regularities (eg all resources in this class have that handler) 
+are asserted by DAML+OIL restrictions.<p>
+This application provides a template for a wide range of 
+possible applications, wherein complex situations are represented 
+in RDF, and where consistency constraints are automatically 
+maintained by associated constraint propagation mechanisms 
+which are at least partly algorithmic (rather than strictly 
+deductive) in nature. The kind of complete integration 
+proposed here is not the only possible approach to this 
+kind of application, but we would argue that first-class 
+status for computational entities in the RDF world removes a 
+layer of indirectness and complexity that would otherwise be 
+necessary.<p>
+
+
+
+<b>3. An Example</b><p>
+
+Consider the simplest of data structures, a point on the plane with two coordinates,
+which can be expressed in Java by:<p>
+<pre>
+
+public class  Point {
+    double xc;  
+    double yc;
+}
+
+</pre>
+
+Here is an extract from a Fabl RDF file at http://purl.oclc.org/net/fabl/examples/geom
+defining the same structure:
+
+
+
+
+
+
+<a name = "point"/>
+<pre>
+&lt;rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:xsd ="http://www.w3.org/2000/10/XMLSchema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:fabl="http://purl.oclc.org/net/nurl/fabl/"
+  xmlns:nurl="http://purl.oclc.org/net/nurl/"
+&gt;
+
+&lt;daml:DatatypeProperty rdf:ID="xc"/&gt;
+&lt;daml:DatatypeProperty rdf:ID="yc"/&gt;
+
+&lt;daml:Class rdf:ID="Point"&gt;
+  &lt;rdfs:subClassOf&gt;    
+    &lt;daml:Restriction&gt;
+      &lt;daml:onProperty rdf:resource="#xc"/&gt;
+      &lt;daml:toClass rdf:resource=
+          "http://www.w3.org/2000/10/XMLSchema#double"/&gt;
+      &lt;daml:cardinality&gt;1&lt;/daml:cardinality&gt;
+    &lt;/daml:Restriction&gt;
+  &lt;/rdfs:subClassOf&gt;    
+  &lt;rdfs:subClassOf&gt;    
+    &lt;daml:Restriction&gt;
+      &lt;daml:onProperty rdf:resource="#yc"/&gt;
+      &lt;daml:toClass rdf:resource=
+          "http://www.w3.org/2000/10/XMLSchema#double"/&gt;
+      &lt;daml:cardinality&gt;1&lt;/daml:cardinality&gt;
+    &lt;/daml:Restriction&gt;
+  &lt;/rdfs:subClassOf&gt;    
+&lt;/daml:Class&gt;  
+</pre>
+
+The Fabl type system makes use of the March, 2001 version of DAML+OIL.
+The above RDF asserts that every member of <b>Point</b> has <b>xc</b> and <b>yc</b> properties, and that
+these properties each have exactly one value of type double. 
+All of the examples in this paper use the name space declarations  given just above,
+which will be abreviated in what follows by <i>[standard&#150;namespace&#150;declarations]</i>.
+Here  is vector addition for points:
+<a name = "pluspoint">
+<pre>
+&lt;rdf:RDF
+<i>[standard&#150;namespace&#150;declarations]</i>
+  xmlns:geom="http://purl.oclc.org/net/fabl/examples/geom#"
+&gt;
+
+&lt;fabl:code&gt;
+geom:Point function plus(geom:Point x,y)
+  {
+  var geom:Point rs;
+  rs = new(geom:Point);
+  rs . geom:xc = x.geom:xc + y.geom:xc;
+  rs . geom:yc = x.geom:yc + y.geom:yc;
+  return rs;
+  }
+&lt;/fabl:code&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+
+The above  text is not, of course, legal RDF.  Rather, it represents
+the contents of a file intended for analysis by the Fabl processor, which converts
+it into RDF triples.
+The pseudo&#150;tag  <b>&lt;fabl:code&gt;</b> encloses Fabl source code; everything
+not enclosed by the tag should be legal RDF.<p>
+
+ 
+Note that the syntax resembles that of JavaScript, except that
+variables and functions are typed.    Fabl types are RDF classes, and are named
+using XML qualified[<a href="http://www.w3.org/TR/REC-xml-names/#ns-qualnames">6</a>]
+or unqualified names (details <a href="#identifiers">below</a>).<p>
+
+
+Here are the contents of the file http://purl.oclc.org/net/fabl/examples/color:
+<pre>
+&lt;rdf:RDF
+<i>[standard&#150;namespace&#150;declarations]</i>
+&gt;
+
+&lt;daml:Class rdf:ID="Color"/&gt;
+&lt;Color rdf:ID="yellow"/&gt;
+&lt;Color rdf:ID="blue"/&gt;
+&lt;rdf:Property rdf:ID="colorOf"&gt;
+  &lt;rdfs:range rdf:resource="#Color"/&gt;
+&lt;/rdf:Property&gt;
+</pre>
+
+The following fragment assigns a color to an existing <b>Point</b>: yellow if its <b>x</b> coordinate
+is positive, and blue otherwise:<p>
+
+
+<pre>
+&lt;rdf:RDF
+<i>[standard&#150;namespace&#150;declarations]</i>
+  xmlns:geom="http://purl.oclc.org/net/fabl/examples/geom#"
+  xmlns:color="http://purl.oclc.org/net/fabl/examples/color#"
+&gt;
+
+&lt;fabl:code&gt;
+fabl:void function setColor(geom:Point x)
+  {
+  if (x . geom:xc &gt; 0) x.color:colorOf = color:yellow;
+  else x.color:colorOf = color:blue;
+  }
+&lt;/fabl:code&gt;
+</pre>
+
+The expression <b>fabl:void</b> may only be used in a context where the return
+type of a function is indicated.  It signifies that the function in question
+does not return a value. Note that <b>fabl:void</b> is not a class, and in particular
+is should not be identified with <b>daml:Nothing</b>.  A function with return
+type <b>daml:Nothing</b> would indicate that the function
+returns a value belonging to <b>daml:Nothing</b> - an impossibility.<p>
+
+The setColor example illustrates the central difference between an RDF class and its counterparts
+in the object&#150;oriented programming  tradition.
+An RDF class is an assertion about properties possessed by a resource, which does
+not preclude the resource from having additional properties not mentioned in the 
+class, nor from belonging to other classes, nor even from aquiring new properties
+and class memberships as time goes on.  
+The progression of data types in programming languages exhibits growing
+freedom of type members:
+C or Pascal types exactly determine the structure of their members; C++ and Java classes
+determine the structure of members to a degree, but allow extension by subclasses;
+the RDF model leaves the structure of members free except as explicitly limited
+by the class definition.<p>
+
+Unless a property has been  explicitly constrained to have only one value,
+Fabl interprets the value of a property selection:
+<pre>
+x.P
+</pre>
+
+as a bag. (Bags rather than sets are used here to avoid having 
+the correctness of the collection stored for a property depend 
+on the semantic distinctness of the collection's elements; 
+determination of semantic identity is not always 
+computationally feasible).   
+In the following example, the first function returns the number
+of colors assigned to an object, and the latter returns its unique color if it
+has only one, and a nul value otherwise.<p>
+
+<pre>
+xsd:int function numColors(daml:Thing x)
+{
+   return cardinality(x.color:colorOf);
+}
+
+color:Color function theColorOf(daml:Thing x)
+{
+   var BagOf(color:Color) cls;
+   cls = x.color:colorOf;
+   if (cardinality(cls)==1) return cls[0];
+   else return fabl:undefined;
+}
+</pre>
+
+
+<b>fabl:undefined</b> is a special identifier which denotes no RDF value, but rather
+indicates the absence of any RDF value in the contexts where it appears. 
+BagOf(T) represents the class of bags whose elements lie in type T (see section 
+<a href="#paramtypes">10</a>). 
+<p>
+
+
+<b>4. RDF Computation in Fabl</b><p>
+
+RDF syntax and semantics can be viewed as having
+three layers: (1) a layer which assigns concrete syntax (usually XML)
+ to RDF assertions, (2) the data model layer, in which RDF content
+ is represented as a set of triples over URIs and literals,
+and (3) a semantic model, consisting of the objects and properties
+to which RDF assertions refer. DAML+OIL specifies 
+semantics[<a href="http://www.daml.org/2001/03/model-theoretic-semantics.html">7</a>] constraining
+the relationship between 
+the data model and the semantic model.<p>
+
+
+
+The proper level of description for computation over RDF is the data model;
+the state of an RDF computation is a set of triples <b>&lt;subject,predicate,object&gt;</b>.
+This triple set in turn can be construed
+as  a directed labeled graph whose nodes are URIs and literals, and
+whose arcs are labeled
+by the URIs of properties.<p>
+
+
+
+Fabl is executed by a virtual machine. An invocation of the Fabl VM creates
+an initial RDF graph which is in effect Fabl's own self description: the graph
+contains nodes for the basic functions and constants making up the Fabl
+language.  Subsequent activity modifies the RDF graph
+maintained by the VM, called the "active graph". The Fabl interpreter can accept
+input from a command shell,
+or can be configured as a server in a  manner appropriate to the application.<p>
+
+The universe of RDF files on the web plays the role of the persistent store
+for Fabl. The command<p>
+
+<pre>
+loadRdf(U)
+</pre>
+
+adds the triple set described in the RDF file at URL <b>U</b> to the active
+graph.<p>
+The active graph is partitioned into <i>pages</i>.  The data defining a page includes:
+(1) the external URL (if any) from which the page was loaded, (2) the set 
+of RDF triples which the page contains,
+(3) a dictionary which maps the ids appearing in the page (as values assigned to 
+the 
+rdf:ID attribute)
+to the resources which they identify, and 
+(4) a set of namespace definitions (bindings of URIs to namespace prefixes).
+Many pages are the internal representations of external RDF pages, but new pages
+can be created which are not yet stored externally.<p>
+
+<pre>
+saveRdf(x,U)
+</pre>
+saves the page upon which x lies at the file <b>U</b>. The current implementation
+interacts with the external world of RDF via simple loading and saving of pages,
+but there are interesting additional possibilities involving distributed computation,
+which are outlined in a later <a href="#future">section</a> <p>
+
+
+
+A global variable or constant <b>X</b> 
+with value <b>V</b>
+is represented by a <b>daml:UniqueProperty</b> named <b>X</b> whose value on the URI <b>fabl:global</b> is <b>V</b>.
+(It doesn't matter what values
+the property assumes when applied to other resources, nor does <b>fabl:global</b> play
+any other role.)
+For example, the following fragment defines the global <b>pi</b>:
+
+
+<pre>
+&lt;daml:DatatypeProperty rdf:ID="pi"&gt;
+  &lt;rdf:type rdf:resource="http://www.daml.org/2001/03/daml+oil#UniqueProperty"/&gt;
+  &lt;rdfs:range rdf:resource="http://www.w3.org/2000/10/XMLSchema#double"/&gt;
+&lt;/daml:DatatypeProperty&gt;
+
+&lt;daml:Class rdf:about="http://purl.oclc.org/net/nurl/fabl/global"&gt; 
+  &lt;pi&gt;3.14159265358979323846 &lt;/pi&gt;
+&lt;/daml:Class&gt;
+</pre>
+
+
+
+The values of global properties 
+can be referred to directly by name in Fabl. For example, since
+http://purl.oclc.org/net/fabl/examples/geom includes the lines above defining <b>pi</b>,
+the following fragment illustrates reference to <b>pi</b> as a global:
+<pre>
+&lt;rdf:RDF
+<i>[standard&#150;namespace&#150;declarations]</i>
+  xmlns:geom="http://purl.oclc.org/net/fabl/examples/geom#"
+&gt;
+
+&lt;fabl:code&gt;
+xsd:double function timesPi(xsd:double x){return x * geom:pi}
+&lt;/fabl:code&gt;
+</pre>
+
+
+
+
+As indicated in the initial example above, basic manipulation of the
+active graph is accomplished via conventional property access syntax:
+If <b>P</b> is the qualified name of a property, and <b>x</b> evaluates to an object, then<p>
+
+<pre>
+x.P
+</pre>
+
+returns a bag of the known values of <b>P</b> on <b>x</b>, that is, the
+set of values <b>V</b> such that the triple <b>&lt;x,P,V&gt;</b> is present in the active graph.
+However, if <b>P</b> is asserted to be univalued - if it was introduced
+as a
+UniqueProperty, or has a cardinality restriction to
+one value -  then<p>
+
+<pre>
+x.P
+</pre>
+
+evaluates to the unique value instead.
+The assigment <p>
+
+<pre>
+x.P = E
+</pre>
+
+for an expression <b>E</b>
+adds the triple <b>&lt;x,P,value(E)&gt;</b> to the active graph, unless
+<b>P</b> has been asserted to be a univalued, in which case
+the new triple replaces the previous triple (if any) which assigned
+a value to <b>P</b> on <b>x</b>.
+The command:<p>
+
+<pre>
+var <v>Type</v> <v>name</v>;
+</pre>
+
+is equivalent to:
+
+<pre>
+&lt;daml:UniqueProperty rdf:ID="<v>name</v>"&gt;
+  &lt;rdfs:range rdf:resource="<v>Type</v>"/&gt;
+&lt;/daml:UniqueProperty&gt;
+</pre>
+
+The function:
+
+<pre>
+new(Type)
+</pre>
+
+creates a new node <b>N</b> in the active graph, and adds the triple <b>&lt;N,rdf:type,Type&gt;</b>.
+Initially, nodes created with the <b>new</b> operator lack an associated URI. However, Fabl allows URIs to be 
+accessed and set as if they were properties, via the pseudo&#150;property <b>uri</b>.<p>
+
+<pre>
+x.uri
+</pre>
+
+is the current URI of <b>x</b> if it has one, and <b>fabl:undefined</b> if not.<p>
+
+<pre>
+x.uri = newURI;
+</pre>
+
+assigns a new URI to <b>x</b>.   If <b>newURI</b>  is already assigned to
+another node <b>y</b> in the active graph, <b>x</b> is merged with <b>y</b>. The merged node 
+will possess the union of the properties possessed by <b>x</b> and <b>y</b> prior to the
+merge.
+<p>
+
+<b>5. RDF Computation Via an API: A Comparison </b><p>
+
+The Java code below uses the Jena API[<a href = "http://www-uk.hpl.hp.com/people/bwm/rdf/jena/index.htm">4</a>]
+to implement the <a href = "#pluspoint">function</a> presented at the 
+beginning of section 2: vector addition of points.
+This sample is included to give the reader a concrete sense
+of the difference 
+between Fabl code,  which expresses 
+elementary
+RDF operations directly as basic operations of the language, and code
+using an API, in
+which the same elementary operations must be expressed as explicit manipulations
+of a representation of RDF content in the host language (here, Java). 
+This is the only purpose of the sample. The details are not relevant
+to anything that appears later in this paper,
+and may be safely skipped by any reader who is willing to grant the point that an API adds complexity to the expression of RDF computation. 
+This point applies equally to other RDF APIs.<p>
+Here is the definition of vector of addition using Jena:<p>
+
+<pre>
+import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
+import com.hp.hpl.mesa.rdf.jena.model.*;
+import com.hp.hpl.mesa.rdf.jena.vocabulary.*;
+
+// The class GeomResources initializes variables
+// xc, yc, and Point to RDF resources of the right kind.
+public class GeomResources {
+    protected static final String URI = "http://purl.oclc.org/net/fabl/examples/geom#";    
+    public static String getURI(){return URI;}   
+    public static Property xc = null;
+    public static Property yc = null;
+    public static Resource Point = null;
+    static {
+        try {
+            xc = new PropertyImpl(URI, "xc");
+            yc = new PropertyImpl(URI, "yc");
+            Point = new ResourceImpl(URI+"Point");
+           } catch (Exception e) {
+            System.out.println("exception: " + e);          
+        }
+    }
+}
+
+public class GeomFunctions {
+// PointPlus is vector addition
+    public static Resource PointPlus(Resource x,Resource y) {
+           Resource rs = x.getModel().createResource();
+           rs.addProperty(RDF.type, GeomResources.Point);
+           rs.addProperty(GeomResources.xc,
+              x.getProperty(GeomResources.xc).getDouble() +
+              y.getProperty(GeomResources.xc).getDouble());
+           rs.addProperty(GeomResources.yc,
+              x.getProperty(GeomResources.yc).getDouble() +
+              y.getProperty(GeomResources.yc).getDouble());
+          return rs;
+           }
+}
+</pre>
+
+
+The Fabl implementation, we would argue, is easier to understand and 
+easier to code. The difference is not due to any defect
+of the Jena API, but to the inherent indirectness of the API
+approach. 
+Further,  the direct expression
+of RDF primitives in Fabl is less than half the story with regards to ease of use.  More significant
+is the fact
+that Fabl types <i>are</i> DAML+OIL classes, and type checking and polymorphism
+at the RDF level are implemented within the language.  When using an API,
+type checking at the RDF level is the user's responsibility. For example, Java will
+not complain at compile time (nor run time) if the method <i>GeomFunctions.PointPlus</i> is applied to resources
+which are not members of <b>GeomResources.Point</b>.<p>
+
+
+
+
+<b>6. Nurls</b><p>
+
+In normal RDF usage, locators (that is URLs) are often
+used as  URIs whether or not the entities they denote exist on the web.
+However, nothing prevents the use of URIs which are completely unrelated to any 
+web location, for example:
+
+
+<pre>
+&lt;rdf:Description rdf:about= "my_green_sedan"&gt;
+</pre><p>
+
+
+Identifying an entity in a manner which does not make use of a WWW locator
+has two advantages.  First, the question of where to find information about the
+entity is decoupled from naming the entity, which allows all of the different varieties
+of information about the entity to evolve without disturbing the manner in which
+the entity is named. Among other things, this simplifies the 
+versioning of RDF data. Second,   use of non&#150;locating URIs frees up the content of the URI
+for expressing hierarchy information about the entities described. 
+<p>
+
+
+In the Fabl implementation, the triple
+<p>
+
+<pre>
+&lt;X,fabl:describedBy,U&gt;
+</pre>
+<p>
+
+means that <b>U</b> denotes an RDF file which provides information
+about <b>X</b>.  
+(<b>rdfs:isDefinedBy</b>[<a href="http://www.w3.org/TR/2000/CR-rdf-schema-20000327#s2.3.5">8</a>] has a closely related, but not quite identical
+intent; descriptions need not always qualify as definitions).  <b>U</b> is also taken as relevant to
+any subject <b>Y</b> whose URI (regarded as a pathname, with "." and "/" as delimiters) extends that of <b>X</b>. For example, if <b>my_green_sedan</b> is described
+by <b>U</b>, then so are <b>my_green_sedan.engine</b>,  and <b>my_green_sedan/engine</b> but not <b>my_green_sedan_attenna</b>.
+
+The Fabl command: <p>
+
+<pre>
+getRdf(Y);
+</pre>
+
+loads the files known to describe the resource <b>Y</b>; that is those files <b>F</b> for which the
+triple  <b>&lt;X,fabl:describedBy,F&gt;</b>  is present in the active graph,and
+<b>Y</b> is an extension of <b>X</b>. 
+
+A typical Fabl initialization
+sequence involves first loading a configuration file containing <b>fabl:describedBy</b> statements
+which indicate where to find information about basic resources. Then, as additional resources
+become relevant to computation, invocations of <b>getRdf</b> bring the needed data into the active
+graph.  In future, lazy strategies may be implemented in which, for example, <b>getRdf(X)</b>
+is automatically invoked on the first access to a property of <b>X</b>. Also, nothing precludes
+future development of 
+complex discovery technology for finding relevant RDF, rather than relying only
+on the simple <b>describedBy</b> mechanism.<p>
+
+
+It is desirable that  non&#150;locating URIs not conflict
+with URLs.  For Fabl applications, we have reserved the URI http://purl.oclc.org/net/nurl/
+as a root URI whose descendants will never serve as locators. This line appears in our
+standard namespace declaration:
+
+<pre>
+  xmlns:nurl="http://purl.oclc.org/net/nurl/"
+</pre>
+
+Nurl stands for "Not a URL".<p>
+
+
+The following fragment tells the Fabl VM where to find the
+description of the Fabl language, and illustrates the points just made:<p>
+
+
+<pre>
+&lt;rdf:Description about= "http://purl.oclc.org/net/nurl/fabl"&gt;
+   &lt;fabl:describedBy  rdf:resource="http://purl.oclc.org/net/fabl/languageV0"/&gt;
+&lt;/rdf:Description&gt; 
+</pre>
+
+
+To access a future release of the language which resides at .../languageV1,
+only the configuration file need change; RDF which mentions language
+primitives via the namespace prefix "fabl:" may be left unchanged.<p>
+
+If <b>U</b> is the source URL of a page in the active graph, and the triple
+<b>&lt;X,fabl:describedBy,U&gt;</b> is present in the active graph, then <b>X</b> is said
+to be a <i>subject</i> of the page. That is, the page has as its subject matter 
+the part of the hierarchical URI name space rooted at <b>X</b>.  A page may have
+more than one subject.  When a new triple <b>&lt;A,P,B&gt;</b> is created in the course
+of computation, and the URI of <b>A</b> is an extension of the subject of a page,
+the new triple is allocated to that page.  (Slightly more complex rules - 
+not covered here - govern the case where the subjects of pages overlap.) <p>
+
+
+<a name="identifiers"/>
+<b>7. Identifiers</b><p>
+
+Identifiers in Fabl  represent XML qualified
+or unqualified names. However,
+since the "." character is reserved for property selection, "."
+is replaced by "\" when an XML name is transcribed into Fabl. For example:<p>
+
+<pre>
+fablex:automobiles\ford
+</pre>
+
+is the Fabl identifier which would have been rendered as 
+
+<pre>
+fablex:automobiles.ford
+</pre>
+
+in XML.  The interpretation of unqualified names is governed by 
+the  <i>path</i> and the  <i>home namespace</i>. The path is a sequence
+of namespaces. When an unqualified name <b>U</b> is encountered, the Fabl interpreter
+searches through the path for a namespace <b>N</b> such that <b>N:U</b> represents a node
+already present in the active graph.  When a new unqualified name <b>U</b> is encountered,
+it is interpreted as <b>H:U</b>, where <b>H</b> is the home namespace. Normally, the "fabl:" and
+"xsd:" namespaces are included in the path, enabling unqualified reference to Fabl language primitives
+and XML Schema datatypes[<a href="http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/">9</a>].
+<p>
+
+
+
+
+
+<b>8. Types</b><p>
+
+Any RDF type is a legal Fabl type. 
+
+<pre>
+X.rdf:type = <i>T</i>;
+</pre>
+
+asserts that <b>X</b> belongs to the type <b>T</b>; that is it adds the
+triple <b>&lt;X,rdf:type,T&gt;</b> to the active graph.  (This statement is legal only 
+if <b>T</b> is a daml:Class, not an XML Schema datatype).
+Of course, a value may have many types.
+<p>
+
+Fabl also includes its own primitives for constructing new types, that is, for introducing new resources
+whose type is <b>rdfs:Class</b>.  The following lines of Fabl introduce the type <b>Point</b> which was
+discussed <a href= "#point">earlier</a>.
+
+<pre>
+class('Point');
+var xsd:double geom:xc;
+var xsd:double geom:yc;
+endClass();
+</pre>
+
+Any Fabl statement which introduces a type is equivalent to a 
+set of DAML+OIL statements about the type.  Thus, the 
+Fabl class definition facility provides simplified syntax, 
+not additional expressiveness.  The Fabl class syntax covers 
+only a part of DAML+OIL. More precisely, although any DAML+OIL 
+class may appear as a legal Fabl type, Fabl syntax will only 
+generate types in the following subset: A class within the 
+subset can be introduced by subclassing a daml:Restriction. 
+Within the <b>daml:Restriction</b>, properties may be restricted either 
+(1) by <b>daml:hasValue</b>, or (2) by <b>daml:toClass</b> with 
+an optional 
+<b>daml:maxCardinality</b> or <b>daml:cardinality</b>
+restriction with value 1. 
+The effect is that properties may be assigned values, or may be 
+assigned types. If a property is assigned a type, 
+it may optionally be restricted to have either exactly one, 
+or at most one value of that type. A new class may also be 
+introduced as a <b>daml:intersectionOf</b> existing classes. 
+Fabl's type deduction mechanisms will not fully exploit 
+available information in types outside this subset. Coverage of 
+more of DAML+OIL can be implemented in future extensions of 
+Fabl without disturbing the correctness of code written for the 
+current subset.<p>
+<!--
+Here are the details:
+
+
+
+
+
+The constructors <b>
+BagOf(T),
+ListOf(T),
+SeqOf(T), </b> and <b>Function(O,I<sub>0</sub>,...,I<sub>N</sub>)
+</b>
+
+
+generate parametric types 
+denoting the set of all bags (resp. lists,sequences)  with members in type <b>T</b>, 
+and of all functions from input types 
+<b>I<sub>0</sub></b>,.... <b>I<sub>N</sub></b> to
+output type <b>O</b>, respectively.<p>
+
+Except for the parametric types, any  Fabl statement which introduces a type is equivalent to
+a  set of DAML+OIL statements about the  type. This was illustrated by the definition
+of <b>Point</b> which appeared <a href="#point">earlier</a>. Only a part of the DAML+OIL formalism
+is used for this purpose.
+A new Fabl class can be introduced by subclassing  a <b>daml:Restriction</b>.
+Within the <b>daml:Restriction</b>, 
+properties may be restricted either  (1) by  <b>daml:hasValue</b>, or 
+(2) by <b>daml:toClass</b> with an optional <b>daml:maxCardinality</b> or <b>daml:cardinality</b> 
+restriction with value 1.
+The effect is that properties
+may be assigned values, or may be assigned types. If a property is assigned a type,
+it may optionally be restricted to have either exactly one, or at most one value of that type.
+A new class may also be introduced as a <b>daml:intersectionOf</b> existing classes. 
+Any DAML+OIL class
+may appear as a legal Fabl type, because <i>any</i> RDF type at all can so appear, but
+Fabl syntax will only generate types in the subset just described, and Fabl's type deduction mechanisms
+will not fully exploit available information in types outside the subset. Coverage of more of DAML+OIL can be implemented 
+in future extensions of Fabl without disturbing the correctness
+of code written for the current subset.<p>
+-->
+
+Here are the details.  A Fabl class definition starts with <p>
+
+<pre>
+class('classname');
+</pre>
+
+and ends with<p>
+
+<pre>
+endClass();
+</pre>
+
+Within the definition, statements of the form<p>
+
+<pre>
+var pathname = expression;
+</pre>
+
+called an <i>assignment</i> and
+
+<pre>
+var [qualifier] [type] pathname;
+</pre>
+
+called an <i>assertion</i>
+may appear. The possible values of the optional qualifier are <b>exists</b>, <b>optional</b>,
+ and <b>multivalued</b> (<b>exists</b> is the default). A pathname
+is a sequence of <a href="#identifiers">names</a> of properties,  separated by dots (".").
+and represents sequential selection of the values of properties along the path.
+The assertion:<p>
+
+<pre>
+var [qualifier] type pathname;
+</pre>
+
+means that, for all elements <b>X</b> of the class being defined, if <b>v</b> is a value
+of <b>X.pathname</b>, then <b>v</b> belongs to <b>type</b>. The qualifier
+<b>exists</b> (resp. <b>optional</b>, 
+<b>multivalued</b>)
+ means that <b>X.pathname</b> must have exactly one value (resp. at most one value,
+ any number of values).<p>
+
+<pre>
+var [qualifier] pathname;
+</pre>
+
+makes no claim about the type of <b>X.pathname</b>, only about the cardinality of the set of values 
+which it assumes (depending
+on the qualifier). <p>
+
+The assignment<p>
+
+
+<pre>
+var pathname = expression;
+</pre>
+
+means that the value of the slot denoted by the pathname is initialized to 
+the value  of the expression at the time when the member <b>X</b> is
+created, or when the class is installed (see <a href="#dynamic">below</a>).
+Here are  examples:<p>
+
+<pre>
+class('Rectangle');
+var Point geom:center;
+var geom:width;  //already declared to be a xsd:double in geom:
+var geom:height; //already declared to be a xsd:double in geom:
+endClass();
+
+class('RedObject');
+var color:color = color:red;
+endClass();
+
+class('RedRectangleCenteredOnXaxis');
+var Rectangle && RedObject this;
+var geom:center.geom:xc = 0.0;
+endClass();
+</pre>
+
+In the last example, The &&  operator
+denotes conjunction, and  the pathname <b>this</b> refers to members of the class
+being defined, so that<p>
+
+<pre>
+var A this;
+</pre>
+ 
+ means that the class  within whose definition the statement appears
+is a subclass of <b>A</b>.<p>
+
+The translation of Fabl class definitions into DAML+OIL RDF is straightforward.
+Assertions translate into <b>toClass</b> restrictions, and their qualifiers to <b>cardinality</b>
+or <b>maxCardinality</b> restrictions.   Assignments translate into
+<b>hasValue</b> restrictions. The only minor complication is that, when pathnames
+of length greater than one appear, helper classes are automatically generated
+which express the constraints on intermediate values in path traversal (details ommitted).<p>
+<!--in order to implement<p>
+
+<pre>
+var geom:center.geom:xc = 0.0;
+</pre>
+
+an autonamed class <b>&lt;CIntermediate&gt;</b> is generated which assigns<p>
+
+<pre>
+var geom:xc = 0.0;
+</pre>
+
+and then the original assignment<p>
+
+<pre>
+var geom:center.geom:xc = 0.0;
+</pre>
+
+is equivalent to:
+
+<pre>
+var &lt;CIntermediate&gt; geom:center;
+</pre>
+-->
+
+<a name="dynamic"/>
+<b>9. Dynamic Installation of Classes</b><p>
+
+Recall that
+
+<pre>
+x.rdf:type = C;
+</pre>
+
+asserts that <b>x</b> belongs to daml:Class <b>C</b>.  
+Such statements
+can be executed at any time, thereby dynamically adding class memberships. 
+The effect of the statement is not just to
+add the triple asserting class membership, but also to apply 
+the constraints which <b>C</b>  imposes on its members. Consider, for example:<p>
+
+<pre>
+var rect = new(Rectangle);
+
+rect.rdf:type = RedRectangleCenteredOnXaxis;
+</pre>
+
+Recall that <b>RedRectangleCenteredOnXaxis</b> asserts constant values  for slots 
+<b>geom:center.geom:xc</b>
+and <b>color:color</b>.  Consequently, after the assertion that <b>x</b> belongs to this class, the following
+triples are added to the graph:
+
+<pre>
+
+&lt;x,rdf:type,RedRectangleCenteredOnXaxis&gt; 
+&lt;x,color:colorOf,color:red&gt;, 
+&lt;x,geom:center,center&#150;uri&gt;,
+&lt;center&#150;uri,rdf:type,geom:Point&gt;
+&lt;center&#150;uri,geom:xc,0.0&gt;
+</pre>
+
+Here, <b>center&#150;uri</b> represents an anonymous node  which has
+been created to represent the value of the  geom:center property of <b>x</b>.<p>
+
+<a name="paramtypes"/>
+<b>10. Parametric Types</b><p>
+
+Fabl includes constructors <b>BagOf(T),
+ListOf(T),
+SeqOf(T), </b> and <b>Function(O,I<sub>0</sub>,...,I<sub>N</sub>)</b>
+which generate parametric types denoting the set of all bags 
+(resp. lists,sequences) with members in type <b>T</b>, 
+and of all functions from input types <b>I<sub>0</sub>,...,I<sub>N</sub></b>
+to output type <b>O</b>, respectively. 
+
+
+Here is the  definition of BagOf:<p>
+
+<pre>
+class('BagOf');
+var daml:Class this;
+var memberType;
+endClass();
+
+daml:Class function BagOf(rdfs:Class tp)
+{
+  var BagOf rs;
+  rs = new(BagOf);
+  rs . memberType = tp;
+  rs . uri = 'nurl:fablParametricTypes/' + 'BagOf(' + uriEncode(tp.uri) + ')';
+  return rs;
+}
+</pre>
+
+This definition appears within the Fabl language definition, where <b>memberType</b> has already
+been declared to be a <b>UniqueProperty</b> of type <b>rdfs:Class</b>.
+The operator <b>uriEncode</b> encodes reserved characters (such as ":" and "/") as described in the URI 
+standard[<a href="http://www.ietf.org/rfc/rfc2396.txt">10</a>].
+<!--Note first that by giving the <b>bagOf\memberType</b> as the name of the property,
+we have allocated a URI for that property inside of the URI for BagOf.  This technique
+can be used in any context where a property which applies to only one class
+is introduced.
+Second, -->
+Note that <b>BagOf</b>
+implements a one&#150;to&#150;one map from the URIs of types <b>T</b> to the URIs of <b>BagOf(T)</b>.
+Note, however that it does nothing towards defining the semantics of the new type in terms of existing DAML+OIL primitives. 
+This is normal practice for new ontologies: 
+new notions are introduced, but explicit characterization of the 
+semantics of these new notions in terms of preexisting primitives 
+follows later, if ever.<p>
+The implementation of the other parametric types <b>ListOF</b>, <b>SeqOf</b>, and <b>Function</b>
+are  analogous.  Fabl programmers can introduce their own  parametric
+types using the same strategy.<p>
+
+
+
+<b>11. Types of Fabl Expressions</b><p>
+
+
+
+
+Fabl is not just a language in which types may be created and manipulated, but
+a <i>typed</i> language in the more usual sense that each Fabl expression  <b>E</b> is assigned an <b>rdfs:Class</b>.
+Of course, any particular Fabl <i>value</i> (ie node in the active graph)
+may have arbitrarily many types, but a Fabl <i>expression</i>  is assigned one
+of the types
+which the values of the expression is expected to assume.  
+Types of function applications are deduced in the usual way. 
+If a Fabl function <b>f</b> is defined by<p>
+<pre>
+O function f(I<sub>0</sub> a<sub>0</sub>,... I<sub>N</sub> a<sub>N</sub>)
+{
+...
+}
+</pre>
+
+then the type of <b>f(i<sub>0</sub>,...i<sub>N</sub>)</b> is <b>O</b> if
+<b>i<sub>0</sub>,...i<sub>N</sub></b> have types <b>I<sub>0</sub> ... I<sub>N</sub></b>.
+
+
+Range assertions are exploited in type
+deduction concerning property selections. If the triple
+
+<pre>
+&lt;P,rdfs:range,T&gt;
+</pre>
+
+is present in the active graph for property <b>P</b>, the expression
+
+<pre>
+x.P;
+</pre>
+
+is given type <b>BagOf(T)</b>, unless <b>P</b> is asserted to be univalued, in which
+case the type of <b>x.P</b> is <b>T</b>. (If more than one range type is assigned to <b>P</b>, this is equivalent
+to assigning the conjunction of the range types.)  
+<p>
+
+<pre>
+E ~ T
+</pre>
+
+performs a type cast of the expression <b>E</b> to type <b>T</b>. Type casts are checked at runtime: if the value
+of <b>E</b> does not lie in <b>T</b> when <b>E~T</b> is executed, an error is thrown.  Simple coercion
+rules are also implemented; for example ints coerce to doubles, and conjunctions
+coerce to their conjuncts.<p>
+
+
+<b>12. Functions and Methods</b><p>
+
+
+A function
+definition:<p>
+
+
+<pre>
+O function fname (I<sub>0</sub> a<sub>0</sub>,... I<sub>N</sub> a<sub>N</sub>))
+{
+...
+}
+</pre>
+
+
+
+<a name="decorate"/>
+adds a function to the active graph under the decorated name<p>
+
+<pre>
+'f' + hash(uri_encode(I<sub>0</sub>.uri),...uri_encode(I<sub>N</sub>.uri),fname)+'_'+fname;<p>
+</pre>
+
+The purpose of decoration is to support polymorphism by assigning
+different URIs to functions whose
+input types differ.   
+If the function definition appears within the scope of a class definition, the function is added beneath the URI of the class,
+and is invoked in the usual manner of methods:  <b>&lt;object&gt;.fname(...)</b>.
+If preceded by the optional keyword <b>final</b>
+a method cannot be overridden. The effect of a Java abstract method
+is  obtained by a property of functional type. 
+Overriding of methods takes place as a side effect of class installation when the class being installed
+assigns values to functional properties.
+This simple treatment
+of method overriding is more flexible than conventional treatments; for example, dynamic installation
+of classes may change the set of methods installed in an object at any time, not only at object-creation
+time as in Java or C++.  These points are illustrated by examples just below.<p>
+
+
+The Fabl expression:<p>
+
+<pre>
+f[I<sub>0</sub>,...I<sub>n</sub>]
+</pre>
+
+denotes the variant of <b>f</b> with the given input types.  For example,<b>twice[SeqOf(xsd:int)]</b>
+denotes the variant of <b>twice</b> which takes sequences of ints as input.<p>
+
+
+The Fabl operator:<p>
+
+<pre>
+supplyArguments(functionalValue,a<sub>0</sub>,...a<sub>N</sub>)
+</pre>
+
+returns the function which results from fixing the first <b>N</b> arguments 
+to <b>functionalValue</b> at the values of a<sub>0</sub>,...a<sub>N</sub>.
+Now, consider the following code:<p>
+
+
+<pre>
+class('Displayable');
+var Function(fabl:void) Displayable\display;
+...
+endClass();
+</pre>
+
+
+Note  that by giving <b>Displayable\display</b> as the name of the functional property,
+we have allocated a URI for that property in the hierarchy beneath the URI for 
+<b>Displayable</b>.  This technique
+can be used in any context where a property which pertains to only one class
+is wanted.<p>
+
+Consider also a concrete variant which displays rectangles:<p>
+
+<pre>
+fabl:void function display(Rectangle r)
+{
+....
+}
+</pre>
+
+Then, with
+
+<pre>
+class('DisplayableRectangle');
+var Displayable && Rectangle this;
+var Displayable\display = supplyArguments(display[Rectangle],this);
+endClass();
+</pre>
+
+a class is defined which is  a subclass of both <b>Rectangle</b> and <b>Displayable</b>, and which
+assigns concrete functions to the corresponding functional properties in the latter class.
+This is similar to what happens when a C++ or Java class contains an abstract
+method which is implemented by a method defined in a subclass. As noted earlier,
+the wiring of virtual methods to their implementations
+can only take place at object creation time in Java or C++, and cannot be undone
+thereafter, whereas
+ Fabl allows  wiring of functional properties to their implementations
+to take place at any time during a computation, via, for example<p>
+
+<pre>
+someRectanglePreviouslyUndisplayable.rdf:type = DisplayableRectangle;
+</pre>
+<p>
+Fabl supports assertion of constraints as part of class definitions - constraints which
+are applied to members at class installation time, and maintained thereafter
+by a constraint propagation mechanism.  The constraint facility is beyond the scope of this 
+paper.<p>
+<!--
+<h3>Functions and Globals as Resources</h3>
+
+Since functions and code are RDF resources, standard RDF
+machinery can be applied
+to make statements and draw inferences about them. Here is a simple
+example, using the
+Dublin Core:
+
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+    
+
+plus[geom:Point,geom:Point].dc:description = 'Vector addition';
+plus[geom:Point,geom:Point].dc:creator = 'Ada Byron Lovelace';
+
+
+Beyond simple annotation, the formalization of functions and code as RDF resources
+is the first step in integrating algorithmic computation and infererence in an RDF setting. The combination
+of inference and algorithmic compuation can be applied to correctness checking, to automatic assembly of compuations
+from available components, and to problem solving which mixes inference and algorithmic compuation (when a subproblem
+is inferred to be solvable by an available algorithm, it is invoked).  This direction of work requires appropriate
+compuational ontologies, which allow the kinds of statements to be made about computational objects that
+will support useful inference.
+
+ Note that    type inference
+provides a very simple template: the rdf:type property of a function captures one aspect
+of its behavior; the types of inputs that it accepts, and the type of result it produces. Specialized forms
+of inference allow automatic checking of c  For example,
+an ontology might be developed which characterizes a set of algorithms 
+for a constrained domain (sorting and searching, graph theory, solving linear systems, 3D rendering, etc). 
+Then, inference mechanisms could be applied not only to answer questions
+directly, but to deduce that subproblems are solvable by available algorithms, which are then 
+invoked
+as part of the process.
+More generally, it is apparent that computational objects constitute
+a useful and interesting domain to which the virtues of RDF  should be relevant.
+
+
+the interesting and useful objects 
+
+
+ which would then be invoked
+as appropriate.
+
+ which deduces the utility of  in graphs, and then
+when queries are posed to an RDF inference engine which can deduce that subproblems 
+In so far as ontologies can be developed which characterize particular varieties of computation (for example,
+
+the development of ontologies for computation.  Such ontologies might classify computational objects
+according to their input-ouput behaviorspecialized kinds of computation, and the integration 
+of of computation to be developed, and  As is the case for other subject matter, fully general
+ontologies which deal with all kinds of computation
+When functions and code (as seen in the next section) are formalized as resources,
+
+With the development of appropriate ontologies, statements
+about functions which describe their input-output behavior can be made,
+and these statements in turn 
+For example, the assertion that a function computes a minimal
+DAML+OIL ontologies can be developed which support
+assertions about functions 
+DAML+OIL can be made to assertions about function
+Perhaps the simplest example
+is that the Dublin Core Metadata schema can be applied to make the
+-->
+
+
+<b>13. Code as RDF</b><p>
+
+The foregoing discussion has described how Fabl data and types are rendered as sets of RDF
+triples. The remaining variety of Fabl entity which needs expression in RDF is <i>code</i>.<p>
+
+Code is represented by elements of the
+class <b>fabl:Xob</b> (<b>Xob</b> = "eXecutable object").
+<b>Xob</b> has subclasses for representing the atoms
+of code (global variables, local variables, and constants), and for the supported control
+structures (blocks, if&#150;else, loops, etc).  Here is the class <b>Xob</b>:<p>
+
+<pre>
+class('Xob');
+//atomic Xob classes such as Xlocal do not require flattening
+var optional Function(Xob,Xob) Xob\flatten; 
+var rdfs:Class Xob\valueType; 
+endClass();
+</pre>
+
+Subclasses of <b>Xob</b> include:<p>
+
+<pre>
+class('Xconstant'); //Constant appearing in code
+var Xob this;
+var Xconstant\value;
+endClass();
+
+class('Xlocal'); //Local variable
+var Xob this;
+var xsd:string Xlocal\name;
+endClass();
+
+class('Xif');
+var Xob this;
+var Xob Xif\condition;
+var Xob Xif\true;
+var optional Xob Xif\false;
+endClass();
+
+class('Xapply'); //application of a function to arguments
+var Xob this;
+var AnyFunction Xapply\function;
+var SeqOf(Xob) Xapply\arguments;
+endClass();
+</pre>
+
+(The type <b>AnyFunction</b> represents the union of all of the function types
+ <b>Function(O,I<sub>0</sub>...I<sub>N</sub>))</b><p>
+
+
+The Fabl statement 
+
+<pre>
+if (test(x)) action(2);
+</pre>
+
+translates to the Xob given by this RDF:<p>
+
+<pre>
+&lt;fabl:Xif&gt;
+   &lt;fabl:Xif.condition&gt;
+      &lt;fabl:Xapply&gt;
+          &lt;fabl:Xapply.function rdf:resource="#f001a0e6f_test"/&gt;
+          &lt;fabl:Xapply.arguments&gt;
+              &lt;rdf:seq&gt;
+                  &lt;rdf:li&gt;
+                      &lt;fabl:Xlocal&gt;
+                          &lt;fabl:Xlocal.name&gt;x&lt/fabl:Xlocal.name&gt;
+                      &lt;/fabl:Xlocal&gt;
+                  &lt;/rdf:li&gt;
+              &lt;/rdf:seq&gt;
+          &lt;/fabl:Xapply.arguments&gt;
+      &lt;/fabl:Xapply&gt;
+   &lt;/fabl:Xif.condition&gt;
+   &lt;fabl:Xif.true&gt;
+      &lt;fabl:Xapply&gt;
+          &lt;fabl:Xapply.function rdf:resource="#f001a0e6f_action"/&gt;
+          &lt;fabl:Xapply.arguments&gt;
+              &lt;rdf:seq&gt;
+                  &lt;rdf:li&gt;
+                      &lt;fabl:Xconstant Xconstant.value=2/&gt;
+                  &lt;/rdf:li&gt;
+              &lt;/rdf:seq&gt;
+          &lt;/fabl:Xapply.arguments&gt;
+      &lt;/fabl:Xapply&gt;
+   &lt;/fabl:Xif.true&gt;
+&lt;fabl:Xif&gt;
+</pre>
+
+
+<b>f001a0e6f_action</b> is the <a href="#decorate">decorated</a> name of the variant of <b>action</b>
+which takes an <b>xsd:int</b> as input.
+Verbose as this is, it omits the  <b>Xob</b>  properties. Correcting this omission for the <b>Xlocal</b> would add the 
+following lines in the scope of the <b>Xlocal</b> element:
+<p>
+
+<pre>
+&lt;rdf:type rdf:resource = "http://purl.oclc.org/net/nurl/fabl/Xob"/&gt;
+&lt;fabl:Xob.valueType rdf:resource = "http://www.w3.org/2000/10/XMLSchema:int"/&gt;
+</pre>
+
+
+
+A full exposition of the set of all Xob classes is beyond the scope of this
+paper, but the above examples should indicate the simple and direct approach
+taken.  The class<p>
+
+
+<pre>
+class('Xfunction'); 
+var xsd:string Xfunction\name;
+var rdfs:Class Xfunction\returnType;  
+var SeqOf(Xlocal) Xfunction\parameters;
+var SeqOf(Xlocal) Xfunction\localVariables;
+var Xob Xfunction\code;
+var SeqOf(xsd:byte) Xfunction\byteCode;
+endClass();
+</pre>
+
+defines an implementation of a function. When a Fabl function is defined, the code
+is analyzed, producing an <b>Xfunction</b> as result.  This <b>Xfunction</b> is assigned as the value
+of the decorated name of the function.<p>
+
+
+The following steps are involved in translating the source code of a Fabl
+function or command into an <b>Xfunction</b>:<p>
+
+<pre>Source code [Parser] -&gt;
+Parse tree   [Analyzer] -&gt;
+Type&#150;analyzed form (Xob) [Flattener]-&gt;
+Flattened form (Xob) [Assembler] -&gt;
+Byte Code (executed by the Fabl virtual machine)</pre>
+
+
+All of these steps are implemented in Fabl. The parse tree is a hierarchical list
+structure in the Lisp tradition whose 
+leaves are tokens; a token in turn is a literal annotated
+by its syntactic category.
+A <i>flat</i> Xob is one in which all control structures have been unwound, resulting
+in a flat block of code whose only control primitives are conditional and unconditional jumps.
+Separating out flattening as a separate step in analysis supports extensibility by new
+control structures, as will be seen in a moment.<p>
+
+
+
+The analysis step is table driven: it is implemented by an extensible collection of
+<i>constructors</i> for individual tokens. The constructor property of a token 
+is a function of type  <b>Function(Xob,daml:List)</b> which, when supplied with a parse tree 
+whose operator is the token, returns the analysis of that tree.  
+Here is the code for the constructor
+for<b> if</b>. The parse of an <b>if</b> statement is a list of the form (if
+<b>&lt;condition&gt;</b> <b>&lt;action&gt;</b>).
+
+<pre>Xob function if_tf(daml:List x)
+  {
+  var Xob cnd,ift,Xif rs;
+  cnd = analyze(x[1]); //the condition
+  if (cnd.Xob\valueType!=xsd:boolean) error('Test in IF must return a boolean');
+  ift = analyze(x[2]);
+  rs = new(Xif);
+  rs . Xif\condition = cnd;
+  rs . Xif\true = ift; //no value need be assigned for Xif\false in this case
+  return rs;
+  } </pre>
+
+<b>x[N]</b> selects the Nth element of the list. Then, the statement
+
+<pre>
+ifToken.constructor = if_tf[daml:List];
+</pre>
+
+assigns this function as the constructor for the <b>if</b> token.  More than one constructor  may
+be assigned to a token; each is tried in turn until one succeeds.  
+<p>
+
+The <b>Xif</b> class, like other non&#150;primitive control structures, includes a method for flattening
+away occurences of the class into a pattern of jumps and gotos (details omitted). Constructors and flattening methods rely on a library of utilities for
+manipulating <b>Xobs</b>, such as the function <b>metaApply</b>, which constructs an application of a function
+to arguments, and <b>metaCast</b> which yields a <b>Xob</b> with a different type, but representing the 
+same computation, as its argument.<p>
+
+
+This simple  architecture  implements the  whole of the Fabl language.  The crucial aspect
+of the architecture is that it is fully open to extension within RDF.  New control structures,
+type constructors, parametrically polymophic operators, annotations for purposes such
+as aspect&#150;oriented programming[<a href="#aop">11</a>], and other varieties of language features
+can all be introduced by loading RDF files containing their descriptions.  The core Fabl implementation
+itself comes into being when the default configuration file
+loads the relevant RDF;  a different configuration file drawing on a different supply of RDF
+would yield another variant of the language. This is the sense 
+in which  the implementation provides an open framework for describing computation
+in RDF, rather than a fixed language.<p>
+
+Finally, note once again that
+<b>Xobs</b> provide a formalism for representing computation in RDF which does
+not depend for its definition on any particular source language
+nor on any particular method for execution. That is, it formalizes computation
+<i>within</i> RDF, as promised by the title of the paper, and can yield
+the benefits sketched in the introduction.
+<p>
+
+<a name="implementation"/>
+<b>14. Implementation</b><p>
+
+The practicality of an RDF&#150;based computational formalism is a central issue for
+this paper, so
+size and performance data for our initial implementation are relevant.<p>
+
+
+The
+implementation consists  of a small kernel written in C. 
+The size of the kernel as a WinTel executable is 150 kilobytes.
+The
+kernel
+includes the byte&#150;code interpreter, a generation&#150;scavenging garbage collector,
+and a loader for our binary format for RDF.  
+The remainder of the implementation consists of Fabl's RDF self description, which 
+consumes approximately one megabyte in our RDF binary format.  A compressed self&#150;installing version of the
+implementation, which includes the Fabl self description, consumes 420 kilobytes. Startup time
+(that is, load of the Fabl self description) is about one third of a second on a 400MHZ Pentium II.
+Primitive benchmarks show performance
+similar to  scripting languages such as JavaScript (as implemented in Internet Explorer 5.0 by Jscript)
+and Python.  However, further work on performance should yield much better
+results, since the language is strongly typed, and amenable to many of the same performance 
+enhancing techniques
+as Java.<p>
+
+<!--
+Fabl is being used in a project for presenting the history of a part of the Lewis and Clark 
+expedition on the web, utilizing a formalization of the relevant historical, biological,
+and geographical data in RDF.  <p>
+-->
+
+The full value of formalizing computation within RDF will be realized
+only by an open standard.  
+We regard Fabl as a proof&#150;of&#150;concept for such a formalization.<p>
+
+ 
+<a name="future"/>
+<b>15. Future Work</b><p>
+
+The current Fabl implementation treats the external RDF world as a store
+of RDF triple sets, which are activated explicitly via <b>loadRdf</b> or <b>getRdf</b>.
+However, 
+an interesting direction for future work is the definition of a remote invocation
+mechanism for RDF&#150;based computation.
+Here is an outline of one possibility.
+<p>
+
+Values of the  <b>fabl:describedBy</b>
+property might include URLs which denote servers as well as RDF pages. In this case,
+<nobr><b>getRdf(U)</b></nobr> would not load any RDF. Instead, a connection
+would be made to the server (or servers)  <b>S</b> designated by the <nobr>value(s)</nobr> of <b>fabl:describedBy</b>
+on <b>U</b>.
+In this scenario, the responsibility of <b>S</b>
+is  to evaluate properties, globals,
+and functions in the URI hierarchy rooted at <b>U</b>.  Whenever a
+ property <b>E.P</b>, a global <b>G</b>, or a function application <b>F(x)</b>
+is evaluated in the client <b>C</b>, and the URI of <b>E</b>, <b>G</b>, or 
+<b>F</b> is an extension of <b>U</b>, a request 
+is forwarded to the server <b>S</b>, which performs the needed computation, and returns
+the result.   The communication protocol would itself be RDF&#150;based,
+along the lines proposed on the www&#150;rdf&#150;interest 
+mailing list[<a href="http://lists.w3.org/Archives/Public/www-rdf-interest/2001Mar/0196.html">12</a>].  Such an approach
+would provide simple and transparent access to distributed computational 
+resources to the programmer, while retaining full decoupling of description 
+of computation in RDF from choices about source language and implementation.
+<p>
+
+
+
+<b>16. Other XML Descriptions of Computation </b><p>
+
+Imperative computational constructs appear in several XML languages. Two prominent
+examples are SMIL[<a href = "http://www.w3.org/TR/2001/WD-smil20-20010301/">13</a>] and 
+XSLT[<a href="http://www.w3.org/TR/xslt">14</a>], in which, for example, conditional execution of
+statements  is
+represented by the <b>&lt;switch&gt;</b> and <b>&lt;xsl:if&gt;</b> tags, respectively. 
+The aims of these
+formalizations are limited to specialized varieties of computation which
+the languages target.   Scripting lanuages encoded in XML include 
+XML Script[<a href="http://www.xmlscript.org/">15</a>]  and 
+XFA Script[<a href = "http://www.xmlforall.com/cgi/xfa?XFAScript">16</a>].<p>
+
+
+<b>Footnotes</b><p>
+
+
+<a name="footnote1"/>
+1. Fabl<sup><small>TM</small></sup> is a trademark of Map Bureau, and is pronounced "fable".</a><p>
+<a name="footnote2"/>
+2. The standardization of JavaScript is 
+ECMAscript[<a href="http://www.ecma.ch/ecma1/stand/ecma-262.htm">17</a>]<p>
+<a name="footnote3"/>
+
+
+<b>References</b><p>
+
+[1] W3C RDF Model and Syntax Working Group. 
+<a href = "http://www.w3.org/TR/REC-rdf-syntax/">Resource Description Framework (RDF) Model and Syntax Specification</a>, February 1999<p>
+[2] Ian Horrocks, Frank van Harmelen, Peter Patel-Schneider, eds. 
+<a href="http://www.daml.org/2001/03/daml+oil-index">DAML+OIL (March 2001)</a>, March 2001<p> 
+[3] Chris Waterson. 
+<a href = "http://www.mozilla.org/rdf/back-end-architecture.html">rdf: back-end architecture</a>, August 1999<p>
+[4] Brian McBride. <a href="http://www-uk.hpl.hp.com/people/bwm/rdf/jena/index.htm">Jena - A Java API for RDF</a>,
+May 2001 (last update)<p>
+
+[5] <a href="http://www.mapbureau.com/">Map Bureau</a>, July 2001 (last update)<p>
+
+[6] Tim Bray, Dave Hollander, Andrew Layman, eds. 
+<a href = "http://www.w3.org/TR/REC-xml-names/">Namespaces in XML</a>. January, 1999<p>
+
+
+[7] Ian Horrocks, Frank van Harmelen, Peter Patel-Schneider, eds. 
+<a href="http://www.daml.org/2001/03/model-theoretic-semantics.html">A Model-Theoretic Semantics for DAML+OIL (March 2001)</a>, March 2001<p>
+
+[9] Dan Brickley, R. V. Guha, eds.  <a href = "http://www.w3.org/TR/2000/CR-rdf-schema-20000327/">Resource Description Framework
+(RDF) Schema Specification 1.0</a>, March 2000<p>
+
+[10] T. Berners-Lee. <a href = "http://www.ietf.org/rfc/rfc2396.txt">Uniform Resource Identifiers (URI): Generic Syntax</a>, August 1998<p>
+<a name="#aop"/><p>
+
+[11] Gregor Kiczales, John Lamping, Anurag Mendhekar and Chris Maeda, Cristina Lopes, Jean-Marc Loingtier and John Irwin 
+"Aspect-Oriented Programming" , 11th Europeen Conference on Object-Oriented Programming, LNCS, vol. 1241, Springer Verlag, 1997<p>
+
+[12] Ken MacLeod, and respondents. 
+<a href = "http://lists.w3.org/Archives/Public/www-rdf-interest/2001Mar/0196.html">Toying with an idea: RDF Protocol</a>, 
+in the <a href = "http://lists.w3.org/Archives/Public/www-rdf-interest/">www-rdf-interest@w3.org Mail Archives</a>, March 2001<p>
+
+[13] Jeff Ayars et al, eds. 
+<a href = "http://www.w3.org/TR/2001/WD-smil20-20010301/">Synchronized Multimedia Integration Language (SMIL 2.0) Specification</a>, March 2001<p>
+
+[14] James Clark, ed.  <a href="http://www.w3.org/TR/xslt">XSL Transformations (XSLT)</a>, November 1999<p>
+
+[15] DecisionSoft Limited, <a href = "http://www.xmlscript.org/">XML Script</a>, May 2001<p>
+
+[16] XML For All, Inc. <a href = "http://www.xmlforall.com/cgi/xfa?XFAScript">XFA Script</a>, May 2001<p>
+
+[17] ECMA. <a href = "http://www.ecma.ch/ecma1/stand/ecma-262.htm">Standard ECMA-262 -
+ECMAScript Language Specification</a>, December 1999
+
+

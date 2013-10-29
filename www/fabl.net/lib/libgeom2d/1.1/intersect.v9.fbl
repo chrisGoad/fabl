@@ -1,0 +1,1030 @@
+
+/* this delegates */
+var Function(void,geom2d:Shape,SeqOf(geom2d:Shape),geom2d:Box) intersect;
+var Function(boolean,geom2d:Shape,geom2d:Box) intersects;
+
+
+
+
+
+
+
+// p = point n = direction
+/*
+Derivation:
+parametric equation for the line
+
+(t*vx + (px - cx))**2 + (t*vy + (py-cy))**2 = r**2
+
+let d = p - c
+
+(t*vx + dx)**2 + (t*vy + dy)**2 = r*r
+(vx*vx+vy*vy)*t*t + 2*(vx*dx + vy*dy) * t + dx*dx + dy*dy = r*r
+
+a = vx*vx+vy*vy;
+b = 2*(vx*dx + vy*dy)
+c = dx*dx + dy*dy - r*r
+
+t = (-b +- sqrt(b*b - 4 * a * c))/2a
+
+*/
+
+// directed distance
+double function ddistance(geom2d:Line ln,geom2d:Point p)
+{
+
+   return p.geom:x * ln.geom2d:u + p.geom:y * ln.geom2d:v + ln.geom2d:w;
+}
+
+
+SeqOf(geom2d:Point) function intersect(geom2d:Line ln,geom2d:Circle crc)
+{
+   var geom2d:Point p,cnt,double w,vx,vy,dx,dy,cx,cy,r,a,b,c,sq,t0,t1;
+   w = ln . geom2d:w;
+//   p = -w * n;
+   cnt = crc.geom:center;
+   p = nearestPoint(ln,cnt);// good numerical analysis to use near point rather than one far away
+   dx = p.geom:x - cnt.geom:x;
+   dy = p.geom:y - cnt.geom:y;
+   vx = -ln.geom2d:v;
+   vy = ln.geom2d:u;
+   r = crc.geom:radius;
+   a = vx*vx  + vy*vy;
+   b = 2.0 * (vx*dx + vy*dy);
+   c = dx*dx + dy*dy - r*r;
+   sq = b*b - 4*a*c;
+   if (sq < 0) return new(SeqOf(geom2d:Point));
+   if (sq == 0) 
+      {
+	  t0 = -b/2*a;
+	  return [p+mkPoint(t0*vx,t0*vy)];
+	  }
+   t0 = (-b - sqrt(sq))/2*a;
+   t1 = (-b + sqrt(sq))/2*a;
+   return [p+mkPoint(t0*vx,t0*vy),p+mkPoint(t1*vx,t1*vy)];
+}
+
+
+
+SeqOf(geom2d:Point) function intersect(geom2d:LineSegment sg,geom2d:Circle crc)
+{
+  var geom2d:Point e0,e1,cnt,double r,d0,d1,lnth,
+      SeqOf(geom2d:Point) ic,rs,int lnc,i,geom2d:Line ln;
+  e0 = sg.geom:end0;
+  e1 = sg.geom:end1;
+  cnt = crc.geom:center;
+  r = crc.geom:radius;
+  d0 = distance(cnt,e0);
+  d1 = distance(cnt,e1);
+  if ((d0 < r) && (d1 < r)) return new(SeqOf(geom2d:Point));
+  lnth = distance(e0,e1);
+  if ((max(d0,d1) - lnth) > r) return  new(SeqOf(geom2d:Point));
+  ln = mkLine(sg);
+  ic = intersect(ln,crc);
+  lnc = length(ic);
+  if (lnc == 0) return ic;
+  rs = new(SeqOf(geom2d:Point));
+  for (i = 0;i<lnc;i++)
+      {
+	  if (pointOnLineIsWithinSegment(sg,ic[i])) push(rs,ic[i]);
+      }
+  return rs;
+}
+
+/*
+
+var crc = mkCircle(mkPoint(0,1),2);
+var sg = mkSegment(mkPoint(-2,0),mkPoint(0,0));
+
+var ii = intersect(sg,cc);
+distance(ii[0],crc.geom:center);
+*/
+
+
+
+
+
+boolean function intersects(geom2d:LineSegment sg,geom2d:Box bx)
+{
+   var geom2d:Point e0,e1,double e0x,e0y,e1x,e1y,minx,maxx,miny,maxy,geom2d:LineSegment sd;
+   e0 = sg.geom:end0;
+   e0x = e0.geom:x;
+   e0y = e0.geom:y;
+   e1 = sg.geom:end1;
+   e1x = e1.geom:x;
+   e1y = e1.geom:y;
+   minx = bx.geom:xmin;
+   maxx = bx.geom:xmax;
+   miny = bx.geom:ymin;
+   maxy = bx.geom:ymax;
+   if ((e0x < minx) && (e1x < minx)) return false;
+   if ((e0x > maxx) && (e1x > maxx)) return false;
+   if ((e0y < miny) && (e1y < miny)) return false;
+   if ((e0y > maxy) && (e1y > maxy)) return false;
+   if ((minx <= e0x) && (e0x <= maxx) && (miny <= e0y) && (e0y <= maxy)) return true;
+   if ((minx <= e1x) && (e1x <= maxx) && (miny <= e1y) && (e1y <= maxy)) return true;
+   // ok, now the complicated case; check for intersection with sides
+   if (((e0x <= minx) && (minx <= e1x))||((e1x <= minx) && (minx <= e0x)))// quick check
+       {
+	   sd = mkSegment(minx,miny,minx,maxy);//left side
+	   if (nnul(intersect(sd,sg))) return true;
+	   }
+   if (((e0x <= maxx) && (maxx <= e1x))||((e1x <= maxx) && (maxx <= e0x)))// quick check
+       {
+	   sd = mkSegment(maxx,miny,maxx,maxy);//right side
+	   if (nnul(intersect(sd,sg))) return true;
+	   }
+   if (((e0y <= miny) && (miny <= e1y))||((e1y <= miny) && (miny <= e0y)))// quick check
+       {
+	   sd = mkSegment(minx,miny,maxx,miny);//bottom
+	   if (nnul(intersect(sd,sg))) return true;
+	   }
+   if (((e0y <= maxy) && (maxy <= e1y))||((e1y <= maxy) && (maxy <= e0y)))// quick check
+       {
+	   sd = mkSegment(minx,maxy,maxx,maxy);//top
+	   if (nnul(intersect(sd,sg))) return true;
+	   }
+   return false;
+}
+/*
+var bx = mkBox(-10,10,-5,5);
+var sg = mkSegment(mkPoint(-2,-15),mkPoint(2,15));
+intersects(bx,sg);
+*/
+
+// cause the direction of fl to match that of mt by flipping its ends, if necessary
+
+geom2d:LineSegment function flipToAlign(geom2d:LineSegment fl,mt)
+{
+    var geom2d:Point m0,m1,f0,f1,md,fd;
+    m0 = mt.geom:end0;
+	m1 = mt.geom:end1;
+	f0 = fl.geom:end0;
+	f1 = fl.geom:end1;
+	md = m1 - m0;
+	fd = f1 - f0;
+	if ((fd * md) < 0) return mkSegment(f1,f0); 
+	else return fl;
+}
+
+
+
+geom2d:LineSegment function intersect(geom2d:LineSegment sg,geom2d:Box bx)
+{
+   var geom2d:Point e0,e1,fint,cint,double e0x,e0y,e1x,e1y,minx,maxx,miny,maxy,geom2d:LineSegment sd,
+       boolean e0inside,e1inside,oneInside;
+   e0 = sg.geom:end0;
+   e0x = e0.geom:x;
+   e0y = e0.geom:y;
+   e1 = sg.geom:end1;
+   e1x = e1.geom:x;
+   e1y = e1.geom:y;
+   minx = bx.geom:xmin;
+   maxx = bx.geom:xmax;
+   miny = bx.geom:ymin;
+   maxy = bx.geom:ymax;
+   if ((e0x < minx) && (e1x < minx)) return nil~geom2d:LineSegment;
+   if ((e0x > maxx) && (e1x > maxx)) return nil~geom2d:LineSegment;
+   if ((e0y < miny) && (e1y < miny)) return nil~geom2d:LineSegment;
+   if ((e0y > maxy) && (e1y > maxy)) return nil~geom2d:LineSegment; 
+   e0inside = (minx <= e0x) && (e0x <= maxx) && (miny <= e0y) && (e0y <= maxy);
+   e1inside =  (minx <= e1x) && (e1x <= maxx) && (miny <= e1y) && (e1y <= maxy);
+   if (e0inside && e1inside) return sg;
+   oneInside = e0inside || e1inside;
+   if (oneInside) 
+      {
+	  if (e0inside) fint = e0; else fint = e1;
+	  }
+   if (((e0x <= minx) && (minx <= e1x))||((e1x <= minx) && (minx <= e0x)))// quick check
+       {
+	   sd = mkSegment(minx,miny,minx,maxy);//left side
+	   cint = intersect(sd,sg);
+	   if (nnul(cint))
+	      {
+	      if (nnul(fint) && (distance(cint,fint) > epsilon)) return flipToAlign(mkSegment(fint,cint),sg);
+		  else fint = cint;
+		  }
+	   }
+   if (((e0x <= maxx) && (maxx <= e1x))||((e1x <= maxx) && (maxx <= e0x)))// quick check
+       {
+	   sd = mkSegment(maxx,miny,maxx,maxy);//right side
+	   cint = intersect(sd,sg);
+	   if (nnul(cint))
+	      {
+	      if (nnul(fint) && (distance(cint,fint) > epsilon)) return  flipToAlign(mkSegment(fint,cint),sg);
+		  else fint = cint;
+		  }
+
+	   }
+   if (((e0y <= miny) && (miny <= e1y))||((e1y <= miny) && (miny <= e0y)))// quick check
+       {
+	   sd = mkSegment(minx,miny,maxx,miny);//bottom
+	   cint = intersect(sd,sg);
+	   if (nnul(cint))
+	      {
+	      if (nnul(fint) && (distance(cint,fint) > epsilon)) return  flipToAlign(mkSegment(fint,cint),sg);
+		  else fint = cint;
+		  }
+	   }
+   if (((e0y <= maxy) && (maxy <= e1y))||((e1y <= maxy) && (maxy <= e0y)))// quick check
+       {
+	   sd = mkSegment(minx,maxy,maxx,maxy);//top
+	   cint = intersect(sd,sg);
+	   if (nnul(cint))
+	      {
+	      if (nnul(fint) && (distance(cint,fint) > epsilon)) return  flipToAlign(mkSegment(fint,cint),sg);
+		  }
+
+	   }
+    return nil~geom2d:LineSegment;
+}
+
+void function intersect(geom2d:LineSegment sg,SeqOf(geom2d:Shape) rs,geom2d:Box bx)
+{
+   var geom2d:LineSegment isg;
+   isg = intersect(sg,bx);
+   if (nnul(isg)) push(rs,isg);
+}
+
+delegate(intersect[geom2d:Shape,SeqOf(geom2d:Shape),geom2d:Box],
+         intersect[geom2d:LineSegment,SeqOf(geom2d:Shape),geom2d:Box]);
+
+
+//considering pnts as a polyline;
+boolean function intersects(SeqOf(geom2d:Point) pnts,geom2d:Box bx)
+{
+   var geom2d:Point e0,e1,p0,int pln,i,geom2d:LineSegment sg,isg,
+      boolean nowinside;
+   pln = length(pnts);
+   if (pln < 2) return false;
+   e1 = pnts[0];
+   if (contains(bx,e1)) return true;
+   for (i=1;i<pln;i++)
+       {
+       e0 = e1;
+	   e1 = pnts[i];
+	   if (contains(bx,e1)) return true;
+	   sg = mkSegment(e0,e1);
+	   if (intersects(sg,bx)) return true;
+	  }
+   return false;
+}
+
+
+
+//consider pnts as a polyline; this returns the polyline's intersection with bx
+void function intersect(SeqOf(geom2d:Point) pnts,SeqOf(SeqOf(geom2d:Point)) rs,geom2d:Box bx)
+{
+   var geom2d:Point e0,e1,p0,int pln,i,SeqOf(geom2d:Point) rp,geom2d:LineSegment sg,isg,
+      boolean nowinside;
+   pln = length(pnts);
+   rp = new(SeqOf(geom2d:Point));
+   if (pln < 2) return;
+/*
+   if (pln == 2)
+      {
+      e0 = pnts[0];
+	  e1 = pnts[0];
+	  sg = mkSegment(e0,e1);
+	  isg = intersect(bx,sg);
+	  if (nul(isg)) return nil~SeqOf(geom2d:Polyline);
+	  if (eq(isg,sg)) 
+	     {
+		 push(rs,ply);
+		 return rs;
+		 }
+	  push(rp,end0(isg));
+	  push(rp,end1(isg));
+	  push(rs,mkPolyline(rp));
+	  return rs;
+	  }
+*/
+   p0 = pnts[0];
+   nowinside = contains(bx,p0);
+   if (nowinside) push(rp,p0);
+   for (i=0;i<pln-1;i++)
+       {
+       e0 = pnts[i];
+	   e1 = pnts[i+1];
+	   sg = mkSegment(e0,e1);
+	   isg = intersect(sg,bx);
+	   if (nnul(isg))
+	      {
+		  if (!nowinside) push(rp,isg.geom:end0);
+		  push(rp,isg.geom:end1);
+		  nowinside = contains(bx,e1);
+		  if (!nowinside)
+		     {
+			 push(rs,rp);
+			 rp = new(SeqOf(geom2d:Point));
+			 }
+		  }
+	  }
+   if (length(rp)>0) push(rs,rp);
+}
+
+
+SeqOf(geom2d:Polyline) function mkPolylines(SeqOf(SeqOf(geom2d:Point)) pnts)
+{
+   var SeqOf(geom2d:Polyline) rs,int ln,i;
+   rs = new(SeqOf(geom2d:Polyline));
+   ln = length(pnts);
+   for (i=0;i<ln;i++)
+       push(rs,mkPolyline(pnts[i]));
+   return rs;
+}
+
+
+
+boolean function intersects(geom2d:Polyline ply,geom2d:Box bx)
+{
+  var SeqOf(geom2d:Point) pnts,geom2d:Box bnds;
+  bnds = bounds(ply);
+  if (not(intersects(bnds,bx))) return false;
+  pnts = ply.geom:points~SeqOf(geom2d:Point);
+  return intersects(pnts,bx);
+}
+
+
+delegate(intersects[geom2d:Shape,geom2d:Box],
+         intersects[geom2d:Polyline,geom2d:Box]);
+
+
+
+boolean function contains(geom2d:Polygon pg,geom2d:Point p)
+{
+  var geom2d:Box bnds,double xmin,xmax,ymin,ymax,geom2d:Point op,p0,p1,geom2d:Polyline ply,
+      SeqOf(geom2d:Point) pnts,int ln,i,icnt,geom2d:LineSegment isg,lns;
+  bnds = bounds(pg);
+  if (!contains(bnds,p)) return false;
+  xmin = bnds.geom:xmin;
+  xmax = bnds.geom:xmax;
+  ymin = bnds.geom:ymin;
+  ymax = bnds.geom:ymax;
+  op = mkPoint(xmax + 0.1 * (xmax - xmin),ymax + 0.1 * (ymax - ymin));  // a random point outside
+  lns = mkSegment(p,op);
+  isg = new(geom2d:LineSegment);
+  ply = pg.geom:boundary;
+  pnts = ply.geom:points;
+  ln = length(pnts);
+  // count intersections; if odd then inside
+  icnt = 0;
+  for (i = 0;i<ln;i++)
+      {
+	  p0 = pnts[i];
+	  if (i == (ln-1)) p1 = pnts[0]; else p1 =pnts[i+1];
+	  isg . geom:end0 = p0;
+	  isg . geom:end1 = p1;
+	  if (nnul(intersect(lns,isg))) icnt++;
+	  }
+   return (mod(icnt,2) == 1);
+}
+
+
+
+
+boolean function intersects(geom2d:Polygon pg,geom2d:Box bx)
+{
+  var geom2d:Polyline ply,SeqOf(geom2d:Point) pnts,double xmax,ymax;
+  // this first test covers the case where pg lies inside bx
+  ply = pg.geom:boundary; 
+  pnts = ply.geom:points;
+  if (contains(bx,pnts[0])) return true;
+  // now the case where the box lies inside the polygon
+  xmax = bx.geom:xmax;
+  ymax = bx.geom:ymax;
+  if (contains(pg,mkPoint(xmax,ymax))) return true;
+  return intersects(ply,bx);
+}
+
+
+delegate(intersects[geom2d:Shape,geom2d:Box],
+         intersects[geom2d:Polygon,geom2d:Box]);
+
+
+
+boolean function intersects(geom2d:Group grp,geom2d:Box bx)
+{
+  var SeqOf(geom2d:Shape) els,geom2d:Shape el,int i,ln;
+  els = grp.geom:elements;
+  ln = length(els);
+  for (i=0;i<ln;i++)
+      {
+	  el = els[i];
+	  if (intersects(el,bx)) return true;
+	  }
+  return false;
+}
+
+
+delegate(intersects[geom2d:Shape,geom2d:Box],
+         intersects[geom2d:Group,geom2d:Box]);
+
+void function intersect(geom2d:Polyline ply,SeqOf(geom2d:Shape) rs,geom2d:Box bx)
+{
+  var SeqOf(SeqOf(geom2d:Point)) spnts,SeqOf(geom2d:Point) pnts,int ln,i;
+  spnts = new(SeqOf(SeqOf(geom2d:Point)));
+  pnts = ply.geom:points~SeqOf(geom2d:Point);
+  intersect(pnts,spnts,bx);
+  ln = length(spnts);
+  for (i=0;i<ln;i++)
+      push(rs,mkPolyline(spnts[i])~geom2d:Shape);
+}
+
+
+delegate(intersect[geom2d:Shape,SeqOf(geom2d:Shape),geom2d:Box],
+         intersect[geom2d:Polyline,SeqOf(geom2d:Shape),geom2d:Box]);
+
+/*
+SeqOf(geom2d:Polyline) function intersect(geom2d:Polyline ply,geom2d:Box bx)
+{
+   var SeqOf(SeqOf(geom2d:Point)) rs,SeqOf(geom2d:Point) pnts;
+   pnts = (ply.geom:points) ~SeqOf(geom2d:Point);
+   rs = new(SeqOf(SeqOf(geom2d:Point)));
+   intersect(rs,bx,pnts);
+   return mkPolylines(rs);
+}
+*/
+
+
+
+SeqOf(geom2d:Point) function endpoints(SeqOf(SeqOf(geom2d:Point)) pnts)
+{
+   var SeqOf(geom2d:Point) rs,cp,int ln,i,lncp;
+   rs = new(SeqOf(geom2d:Point));
+   ln = length(pnts);
+   for (i=0;i<ln;i++)
+       {
+	   cp = pnts[i];
+	   lncp = length(cp);
+	   if (lncp < 2) error("Unexpected");
+	   push(rs,cp[0]);
+	   push(rs,cp[lncp-1]);
+	   }
+   return rs;
+}
+
+
+
+
+double function twopiify(double a)
+{
+   var double twopi,aa,m2pi;
+   twopi = 2.0 * pi;
+   aa = abs(a);
+   m2pi = aa - trunc(aa/twopi) * twopi; // later import mod function
+   if (a >= 0) return m2pi; else return twopi-m2pi;
+}
+
+
+
+
+
+SeqOf(int) function invertPermutation(SeqOf(int) prm)
+{
+   var SeqOf(int) rs,int ln,i;
+   rs = new(SeqOf(int));
+   ln = length(prm);
+   for (i = 0;i<ln;i++) push(rs,0);
+   for (i = 0;i<ln;i++) 
+       {
+	   rs[prm[i]] = i;
+	   }
+   return rs;
+}
+
+
+
+
+// sides left 0 top 1 right 2 =bottom 3 = bottom 
+// corners upper left 0 upper right 1 lower right 2 lower left 3
+int function boxSide(double px,py,hwd,hht)
+{
+   if (aequal(px, hwd)) return 2;
+   if (aequal(px,-hwd)) return 0;
+   if (aequal(py, hht)) return  1;
+   return 3;
+}
+
+
+
+geom2d:Point function corner(geom2d:Box bx,int ci)
+{   
+   if (ci == 0) return mkPoint(bx.geom:xmin,bx.geom:ymax);
+   if (ci == 1) return mkPoint(bx.geom:xmax,bx.geom:ymax);
+   if (ci == 2) return mkPoint(bx.geom:xmax,bx.geom:ymin);
+   return mkPoint(bx.geom:xmin,bx.geom:ymin);
+}
+
+
+// in clockwise direction
+SeqOf(geom2d:Point) function connectOnPerimeter(geom2d:Box bx,geom2d:Point p0,p1)
+{
+    var geom2d:Point cnt,rp0,rp1,double x0,y0,x1,y1,hwd,hht,d0,d1,df,
+	   int sd0,sd1,csd,SeqOf(geom2d:Point) prs;
+    cnt = center(bx);
+	rp0 = p0 - cnt;
+	rp1 = p1 - cnt;
+	x0 = rp0.geom:x;
+	y0 = rp0.geom:y;
+	x1 = rp1.geom:x;
+	y1 = rp1.geom:y;
+	hwd = 0.5 * width(bx);
+	hht = 0.5 * height(bx);
+
+	sd0 = boxSide(x0,y0,hwd,hht);
+	sd1 = boxSide(x1,y1,hwd,hht);
+	if (sd0 == sd1)
+	   {
+	   d0 = direction(rp0);
+	   d1 = direction(rp1);
+	   df = twopiify(d0-d1);
+	   if (df < pi) return [p0,p1];
+	   }
+	prs = [p0];
+	csd = sd0;
+	push(prs,corner(bx,csd));
+	csd = mod(csd+1,4);
+    while (not(csd == sd1))
+	     {
+		 push(prs,corner(bx,csd));
+		 csd = mod(csd+1,4);
+		 }
+	push(prs,p1);
+	return prs;
+}
+
+
+
+SeqOf(geom2d:Point) function reverse(SeqOf(geom2d:Point) pnts)
+{
+  var int ln,i,SeqOf(geom2d:Point) rs;
+  rs = new(SeqOf(geom2d:Point));
+  ln = length(pnts);
+  for (i=1;i<=ln;i++) push(rs,pnts[ln-i]);
+  return rs;
+}
+
+
+var twicePi = 2 * pi;
+
+//  Put an angle  into [-pi, pi] range; dumb algorithm
+double function put_in_pi_mpi(double a)
+{
+       var double ang;
+       ang=a;
+      while (ang  > pi)  ang=ang - twicePi;
+      while (ang < -pi)  ang=ang + twicePi;
+      return ang;
+}
+
+double function angularDistance(double a,b)
+{
+   return put_in_pi_mpi(a - b);
+}
+
+
+
+double function totalTurn0(SeqOf(geom2d:Point) pnts)
+{
+   var double fdir,cdir,ndir,tsf,int i,lpi;
+   if (length(pnts) < 3) return 2*pi; // arbitrarily call it counterclockwise
+   fdir = direction(pnts[0],pnts[1]);
+   ndir = direction(pnts[1],pnts[2]);
+   tsf = angularDistance(ndir,fdir);
+   lpi = length(pnts)-1;
+   for (i = 2;i<lpi;i++)
+       {
+	   cdir = ndir;
+	   ndir = direction(pnts[i],pnts[i+1]);
+	   tsf = tsf + angularDistance(ndir,cdir);
+	   }
+   cdir = ndir;
+   ndir = direction(pnts[lpi],pnts[0]);
+   tsf = tsf + angularDistance(ndir,cdir);
+   tsf = tsf + angularDistance(fdir,ndir);
+   return tsf;
+}
+
+/*
+var pnts = [mkPoint(0,0),mkPoint(1,0),mkPoint(1,1),mkPoint(0,1)];
+totalTurn([mkPoint(0,0),mkPoint(1,0),mkPoint(1,0),mkPoint(1,1),mkPoint(0,1)]);
+*/
+
+void function removeNearNeighbors(SeqOf(geom2d:Point) rs,pnts,double d)
+{
+   var int ln,i,epi,geom2d:Point cp,np;
+   reset(rs);
+   ln = length(pnts);
+   
+   if (ln == 0) return;
+    cp = pnts[0];
+  epi = ln-1;
+   while ((epi > 0) && (distance(cp,pnts[epi])<d)) epi = epi -1;
+   push(rs,cp);
+   for (i=1;i<=epi;i++)
+       {
+	   np = pnts[i];
+	   if (distance(cp,np) > d) 
+	      {
+		  push(rs,np);
+		  cp = np;
+		  }
+	   }
+}
+
+var totalTurnBuf = new(SeqOf(geom2d:Point));
+
+
+double function totalTurn(SeqOf(geom2d:Point) pnts)
+{
+   removeNearNeighbors(totalTurnBuf,pnts,epsilon);
+   return totalTurn0(totalTurnBuf);
+}
+
+
+boolean function isClockwise(SeqOf(geom2d:Point) pnts)
+{
+   return totalTurn(pnts)<-pi;
+}
+
+
+
+
+
+   
+double function pathLength(SeqOf(geom2d:Point) pnts)
+{
+   var double rs,int i,lpi;
+   rs = 0.0;
+   lpi= length(pnts)-1;
+   for (i=0;i<lpi;i++) 
+       {
+	   rs = rs + distance(pnts[i],pnts[i+1]);
+	   }
+   return rs;
+}
+
+	   
+
+
+// isgs = interior segments (each a polyline)
+// iscts = intersections with the perimeter (end points of isgs)
+// prm = permutation of iscts prm[i] = ith point clockwise around the perimeter
+// iprm = inverse of prm
+// sint = starting intersection index
+
+var reversalCount = 0;
+var nonReversalCount = 0;
+
+
+SeqOf(geom2d:Point) function traverseBoxedPolygon(geom2d:Box bx,
+   SeqOf(SeqOf(geom2d:Point)) isgs,SeqOf(geom2d:Point) iscts,SeqOf(int) prm,iprm,int sint,
+   SeqOf(boolean) beenTraversed)
+{
+    var SeqOf(geom2d:Point) trs,cnpcl,cnpccl,csg,int ln,ri,nri,oei,cii,i,sgi,geom2d:Point p0,p1,
+	    boolean clockwise,double dc,dcc;
+//   writeln("*********TRAVERSE*********");
+    trs = new(SeqOf(geom2d:Point));
+	ri = sint;
+	ln = length(prm);
+	while (true)
+	    {
+		cii = prm[ri]; // index of the current intersection
+		sgi = cii/2; // interior segment starting at cii
+		if (mod(cii,2)==0) // interior is to the right going in
+		   {
+		   trs * isgs[sgi];
+		   oei = iprm[sgi*2+1]; // rotation index of the other end of sgi
+		   nri = mod(oei+1,ln);  // next intersection point in clockwise direction
+		   p0 = iscts[prm[oei]];
+		   p1 = iscts[prm[nri]];
+		   clockwise = true;
+           cnpcl =  connectOnPerimeter(bx,p1,p0); //clockwise
+		   cnpccl =  connectOnPerimeter(bx,p0,p1);//counterclockwise
+		   dc =pathLength(cnpcl);
+		   dcc = pathLength(cnpccl);
+//		   writeln("******  clockwise ",dc," counterclockwise ",dcc);
+		   if (dc < dcc ) {trs  * reverse(cnpcl);nonReversalCount++;} else {trs * cnpccl;reversalCount++;}
+		   }
+		else //interior is to the left
+		   {
+		   trs * reverse(isgs[sgi]);
+		   oei = iprm[sgi*2]; // rotation index of the other end of sgi
+		   nri = oei-1;  // next intersection point in counterclockwise direction
+		   if (nri < 0) nri = ln -1;
+		   p0 = iscts[prm[oei]];
+		   p1 = iscts[prm[nri]];
+		   clockwise = false;
+           cnpcl =  connectOnPerimeter(bx,p1,p0); //clockwise
+		   cnpccl =  connectOnPerimeter(bx,p0,p1);//counterclockwise
+		   dc =pathLength(cnpcl);
+		   dcc = pathLength(cnpccl);
+//		   writeln("******  clockwise ",dc," counterclockwise ",dcc);
+		   if (dc < dcc ) {trs  * reverse(cnpcl);reversalCount++;} else {nonReversalCount++;trs * cnpccl;}
+		   }
+		beenTraversed[oei] = true;
+		beenTraversed[nri] = true;
+	    if (nri == sint) return trs; // back to the start
+		ri = nri;
+	    }
+}
+		   
+int function find(SeqOf(boolean) bls,boolean vl)
+{
+   var int ln,i;
+   ln = length(bls);
+   for (i=0;i<ln;i++) 
+       {
+	   if (bls[i] == vl) return i;
+	   }
+   return -1;
+}
+
+
+
+// The algorithm assumes that the first point in the polygon is outside the box (if any is)
+// The following 
+
+
+
+
+SeqOf(geom2d:Point) function rotateSeq(SeqOf(geom2d:Point) pnts,int n)
+{
+   var SeqOf(geom2d:Point) rs,int ln,i;
+   rs = new(SeqOf(geom2d:Point));
+   ln = length(pnts);
+   for (i = 0;i<ln;i++) push(rs,pnts[mod(i+n,ln)]);
+   return rs;
+}
+
+
+
+
+
+SeqOf(geom2d:Point) function firstPointToOutside(geom2d:Box bx,SeqOf(geom2d:Point) pnts)
+{
+   var int ln,i;
+   ln = length(pnts);
+   for (i=0;i<ln;i++)
+       {
+	   if (!contains(bx,pnts[i])) return rotateSeq(pnts,i);
+	   }
+   return pnts;
+}
+
+
+
+
+
+//ASSUMPTION: no fancy fill rule stuff here; assume polygon boundary is non-self-intersecting
+  
+
+// Idea: order all of the perimeter intersections in clockwise order
+// From each intersection, traverse the polygon starting at that point.
+//  Mark the intersections that that have been treated
+// so far.
+
+//var SeqOf(boolean) bnt;
+
+var notClockwiseCount = 0;
+
+
+void function intersect(geom2d:Polygon plg,SeqOf(geom2d:Shape) rs,geom2d:Box bx)
+{
+   var SeqOf(geom2d:Point) ipnts,pnts,ppnts,iscts,int cint,ln,i,lnisgs,lni,
+       geom2d:Polyline pln,
+       SeqOf(SeqOf(geom2d:Point)) isgs,geom2d:Point p0,cnt,boolean closedit,p0inside,
+	   SeqOf(double) drs,double d0,SeqOf(int) prm,iprm,SeqOf(boolean) beenTraversed;
+
+//   writeln("***************");
+   beenTraversed = new(SeqOf(boolean));// 
+//    writeln("***************");
+//  bnt = beenTraversed;  
+//    writeln("SSS ",seqDataKind(bnt));
+   pln = plg.geom:boundary;
+   ipnts = pln.geom:points ~SeqOf(geom2d:Point);
+   if (not(isClockwise(ipnts))) 
+      {
+//	  writeln("NOT CLOCKWISE ************");
+	  notClockwiseCount++;
+	  ipnts = reverse(ipnts);
+	  }
+ //  else 	  writeln("CLOCKWISE ************");
+
+   pnts = firstPointToOutside(bx,ipnts);
+   if (eq(pnts,ipnts)) // all points are inside the box
+   {
+      push(rs,plg~geom2d:Shape);
+//	  writeln(" ******** INSIDE ***********");
+	  return;
+   }
+   ln = length(pnts);
+   if (distance(pnts[0],pnts[ln-1]) > epsilon)
+      {
+      push(pnts,pnts[0]);   
+	  closedit = true;
+	  }
+   else closedit = false;
+   isgs = new(SeqOf(SeqOf(geom2d:Point)));//interior segments
+   intersect(pnts,isgs,bx);
+   if (closedit) set_length(pnts,ln);
+   lnisgs = length(isgs);
+   p0 = pnts[0];
+//   p0inside = contains(bx,p0);
+   if (lnisgs == 0)
+	  return;
+   //ok assume the point sequence runs clockwise around the interior; inside is to the right
+  // compute the directions to the intersection points, and put  in counterclockwise order starting
+  // with the first
+   iscts = endpoints(isgs);//intersections with perimeter
+   lni = length(iscts); // = 2*lnisgs
+   drs = new(SeqOf(double));
+   cnt = center(bx);
+   d0 = direction(iscts[i]-cnt);
+   push(drs,0.0);
+   for (i=1;i<lni;i++)
+	   push(drs,twopiify(d0-direction(iscts[i]-cnt)));   //  sort in clockwise order
+   prm = sort:identityPermutation(lni);
+   sort:quickSort(prm,drs);
+   // if p0inside, then we want the points in clockwise order
+   iprm = invertPermutation(prm);
+//   if (p0inside) error("deal with this later");
+//    writeln("SSS ",seqDataKind(bnt));
+  for (i=0;i<lni;i++) push(beenTraversed,false);
+//   rs = new(SeqOf(geom2d:Polygon)); 
+   cint = 0;
+//   bnt = beenTraversed;
+ //  writeln("SSS ",seqDataKind(bnt));
+   while (true) 
+         {
+         ppnts = traverseBoxedPolygon(bx,isgs,iscts,prm,iprm,cint,beenTraversed);
+         push(rs,mkPolygon(ppnts)~geom2d:Shape);
+		 cint = find(beenTraversed,false);
+		 if (cint < 0)
+		  return;
+		 }
+
+}
+
+
+
+delegate(intersect[geom2d:Shape,SeqOf(geom2d:Shape),geom2d:Box],
+         intersect[geom2d:Polygon,SeqOf(geom2d:Shape),geom2d:Box]);
+
+
+/*
+
+SeqOf(geom2d:Polygon) function intersect(geom2d:Polygon plg,geom2d:Box bx)
+{
+    var SeqOf(geom2d:Polygon) rs;
+	rs = new(SeqOf(geom2d:Polygon));
+	intersect(plg,rs~SeqOf(geom2d:Shape),bx);
+	return rs;
+}
+*/
+
+
+void function intersect(geom2d:Group gr,SeqOf(geom2d:Shape) rs,geom2d:Box bx)
+{
+   var SeqOf(geom2d:Shape) els,int ln,i;
+   els = gr.geom:elements;
+   ln = length(els);
+   for (i=0;i<ln;i++) intersect(els[i],rs,bx);
+}
+
+delegate(intersect[geom2d:Shape,SeqOf(geom2d:Shape),geom2d:Box],
+         intersect[geom2d:Group,SeqOf(geom2d:Shape),geom2d:Box]);
+
+
+
+void function intersect(geom2d:Point pnt,SeqOf(geom2d:Shape) rs,geom2d:Box bx)
+{
+   if (contains(bx,pnt)) push(rs,pnt~geom2d:Shape);
+}
+
+
+
+delegate(intersect[geom2d:Shape,SeqOf(geom2d:Shape),geom2d:Box],
+         intersect[geom2d:Point,SeqOf(geom2d:Shape),geom2d:Box]);
+
+
+
+geom2d:Shape function intersect(geom2d:Shape sh,geom2d:Box bx)
+{
+    var SeqOf(geom2d:Shape) rs;
+    rs = new(SeqOf(geom2d:Shape));
+	intersect(sh,rs,bx);
+	if (length(rs)==0) return nil~geom2d:Shape;
+	if (length(rs) == 1) return rs[0];
+	return mkGroup(rs);
+}
+
+
+/*
+   var ln = mkLine(mkPoint(0,2),mkPoint(1,2));
+   var cnt = mkPoint(0,-1);
+   var crc = mkCircle(cnt,4);
+   var kk = intersect(ln,crc);
+   distance(kk[0],cnt);
+   distance(kk[1],cnt);
+
+   var fln = mkSegment(mkPoint(-3,2),mkPoint(3,2));
+   var cnt = mkPoint(0,-1);
+   var crc = mkCircle(cnt,4);
+   var kk = intersect(fln,crc);
+   distance(kk[0],cnt);
+   distance(kk[1],cnt);
+
+
+             
+*/
+
+
+boolean function hasXintercept(geom2d:Point p0,p1,double y)
+{
+  var double p0x,p1x;
+  p0x = p0.geom:x;
+  p1x = p1.geom:x;
+  if (p0x <= y) return (p1x >= y);
+  return (p1x <= y);
+}
+
+
+double function xIntercept(geom2d:Point p0,p1,double y)
+{
+  var double p0x,p1x,p0y,p1y,dx,dy,fr;
+   
+   p0x = p0.geom:x;
+   p1x = p1.geom:x;
+   p0y = p0.geom:y;
+   p1y = p1.geom:y;
+   dy = p1y - p0y;
+   dx = p1x - p0x;
+   if (dy == 0.0) return p0x + 0.5  * dx;
+   fr = (y - p0y)/dy;
+   return p0x + fr * dx;
+}
+
+void function xIntercepts(SeqOf(geom2d:Point) pnts,SeqOf(double) rs,double y)
+{
+   var int ln,i,double py,boolean lty,nlty,geom2d:Point p,np;
+   ln = length(pnts);
+   if (ln == 0) return;
+   p = pnts[0];
+   py = p.geom:y;
+   lty = py < y;
+   for (i = 1;i<ln;i++)
+       {
+	   np = pnts[i];
+	   py = np.geom:y;
+	   nlty = py < y;
+	   if (lty != nlty) push(rs,xIntercept(p,np,y));
+	   p = np;
+	   lty = nlty;
+	   }
+}
+
+/*
+
+xIntercept(mkPoint(0,1),mkPoint(-1,-1),0);
+var pnts = [mkPoint(-1,-1),mkPoint(1,-1),mkPoint(2,1),mkPoint(0,1),mkPoint(-1,-1)];
+var y = 0.0;
+xIntercepts(pnts,y);
+
+*/
+
+void function xIntercepts(geom2d:Polyline ply,SeqOf(double)  rs,double y)
+{
+    xIntercepts(ply.geom:points,rs,y);
+}
+
+delegate(xIntercepts[geom2d:Shape,SeqOf(double),double],
+        xIntercepts[geom2d:Polyline,SeqOf(double),double]);
+
+
+void function xIntercepts(geom2d:Polygon pg,SeqOf(double) rs,double y)
+{
+    xIntercepts(pg.geom:boundary,rs,y);
+}
+
+
+delegate(xIntercepts[geom2d:Shape,SeqOf(double),double],
+        xIntercepts[geom2d:Polygon,SeqOf(double),double]);
+
+
+SeqOf(double) function xIntercepts(geom2d:Group g,SeqOf(double) rs,double y)
+{
+  var SeqOf(geom2d:Shape) els,int ln,i;
+  els = g.geom:elements;
+  ln = length(els);
+  for (i=0;i<ln;i++) xIntercepts(els[i],rs,y);
+}
+
+
+delegate(xIntercepts[geom2d:Shape,SeqOf(double),double],
+        xIntercepts[geom2d:Group,SeqOf(double),double]);
+
+
+  
+

@@ -1,0 +1,7 @@
+
+var Function(geom2d:Box,geom2d:Shape) bounds;// delegated
+//var Function(void,geom2d:Shape,SeqOf(SeqOf(geom2d:Point))) extractPointSequences;// delegated
+
+var Function(geom2d:Shape,geom2d:Shape,geom2d:Box) intersect;// delegated
+
+

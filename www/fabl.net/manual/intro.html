@@ -1,0 +1,172 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Introduction</span></center><p style="height:1em"></p><p>Fabl (pronounced "fable") is a native programming language for the <a href="http://www.w3.org/2001/sw/">Semantic Web</a>.
+The Fabl object model is the RDF property graph, and the Fabl type system
+implements a subset of
+the OWL web ontology language (<a href="http://www.w3.org/RDF/">RDF</a>  is the W3C standard  data representation
+for the current generation of Semantic Web technology, while <a href="http://www.w3.org/TR/owl-ref/">OWL</a> is a W3C standard 
+for describing classes of RDF objects). However,
+this manual does not assume prior familiarity with RDF, OWL, or other Semantic Web technologies.
+Learning Fabl is one way of learning about the Semantic Web.</p>
+
+<p>Fabl programs themselves are represented as Semantic Web objects.
+<!--, so that computation methods as well
+as the objects that the computations manipulate are formalized as Semantic Web resources.-->
+This representation of computation within the Semantic Web allows
+active content to be integrated seamlessly into RDF  repositories,
+and provides a programming environment which simplifies
+the manipulation of RDF when compared to use of a conventional language via an API.</p>
+
+<p>Fabl programs may be expressed as RDF
+objects using standard RDF syntax, 
+or via a conventional syntax which might be described
+as <a href="http://devedge.netscape.com/central/javascript/">Javascript</a> (or its standardized variant
+<a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMAScript</a>) enhanced with types and qualified property names.  The language
+is designed to be easy to learn for
+programmers familiar with the conventional JavaScript/HTML/XML/DOM web&#150;programming model.
+In fact, this alternative syntax allows programmers to create and manipulate RDF objects
+without needing to learn the XML-based RDF syntax - a syntax that can be
+difficult to master.</p>
+
+<!--
+<p class="subheading">Trying out Fabl over the web</p>
+
+<p>For those who would like to sample  Fabl programming  
+without performing an installation, a web service for evaluating Fabl expressions is available
+at <a href="http://fabl.net/eval/expression.html">http://fabl.net/eval/expression.html</a> and
+for uploading and evaluating the contents of Fabl source files at <a href="http://fabl.net/eval/file.html">http://fabl.net/eval/file.html</a>.
+In each case, a new instance of the Fabl interpreter is invoked by each evaluation, so that no state
+is retained between invocations.  Also, limits are placed 
+on the duration of computation, on the amount of memory
+used, and access to the file system (but not to web files) is prohibited.  Those who plan to do more than try out the Fabl environment
+should install the language; the web service is intended only for evaluation purposes.  It may be withdrawn 
+without notice if loads become excessive.</p>
+
+-->
+
+<p class="subheading">Installing and starting Fabl</p>
+
+<p>Fabl is distributed for Linux as a  compressed tarball, named fabl-2.0.11.tar.gz. To install, uncompress and 
+untar this into any directory (eg /usr/local or /usr/local/src), then follow the instructions at 
+<a href="http://fabl.net/2.0.11/install.html">http://fabl.net/2.0.11/install.html</a>.
+
+
+<p> For Windows platforms, Fabl can be installed under the <a href="http://www.cygwin.com">cygwin</a>
+Linux-compatability environment.</p>
+
+<p>Fabl runs either in interactive mode, or as a <a href="cgi.html">CGI</a> handler.
+To run Fabl in interactive mode, start a command shell,
+set your current directory &lt;fablRoot&gt;/bin, where
+ &lt;fablRoot&gt is the root of the installation, and then type "./fabl". For example:</p>
+
+<pre class=longpre>
+cd /usr/local/fabl-2.0.11/bin
+./fabl
+</pre>
+
+This manual includes a series of examples which the reader
+may type or paste into  the command shell.  Here's the first one:<p>
+
+<pre class=longpre>2 + 3;
+-&gt;5
+</pre>
+<p>
+
+In the above, "2+3;" is user input, and "-&gt;5" represents the response.  The
+command shell does not print out the arrow ("-&gt;"); we include the arrow in
+our examples to indicate lines where response by the Fabl interpreter appears.<p>
+
+
+As the user interacts with the Fabl interpreter, its state changes. For example,
+
+<pre class=longpre>
+var a = 23;
+a++;
+->24
+</pre>
+
+
+
+<p>Adds a new variable, then increments it.  The Fabl state is an RDF graph.
+</p>
+
+
+
+<p>We will introduce Fabl syntax and the Fabl programming environment with examples involving
+primitive types (such as strings and numbers). RDF does not enter the picture until objects
+are introduced.</p>
+
+<p class="subheading">Adenine</p>
+
+<p><a href = "http://haystack.lcs.mit.edu/documentation/adenine.pdf">Adenine</a>,
+developed as part of the <a href="http://haystack.lcs.mit.edu/">Haystack</a> project,
+is a language that shares Fabl's basic goals and structure: it too has RDF resources as
+its native objects, and represents programs within RDF. The following are some of the
+significant differences:
+(1) Fabl's syntax is conventional in style (a minor modification of Javascript), while
+Adenine's is more unusual (eg Adenine syntax for adding one and two is "+ 1 2" rather than "1+2")
+(2) Fabl is written in C (and itself), while Adenine lives in the Java environment, 
+(3) Fabl is strongly typed (with OWL as its type system), while Adenine includes only runtime 
+typing.</div>
+</body>
+</html>

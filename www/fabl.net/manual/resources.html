@@ -1,0 +1,167 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Resources</span></center><p style="height:1em"></p>
+<p>The Fabl type <b>Resource</b> implements the universal type
+<b>rdfs:Resource</b>. Fabl provides a shorter synonym for this type: <b>ob</b>, so that</p>
+
+<pre>
+Resource == rdfs:Resource;
+-&gt;true
+Resource == ob;
+-&gt;true
+</pre>
+
+
+<p>The function </p><a name="allocate_string">
+<p class="fablfunction">Resource allocate(string qname)
+</p></a>
+<p>allocates a resource with the given  qualified name.  
+<p>For example, after</p>
+
+<pre class=longpre>
+allocate("ex:myresource");
+</pre>
+
+
+<p>the resource with URI http://example.org/myresource is added to Fabl's triple store,
+if it is not already present. It is not an error to reallocate a resource.
+</p>
+
+
+<p>The function </p><a name="resource_string">
+<p class="fablfunction">Resource resource(string uri)
+</p></a>
+<p>allocates a resource when given its  uri rather than qualified name.
+So,</p>
+
+<pre>
+resource("http://example.org/myresource") == allocate("ex:myresource");
+-&gt;true
+</pre>
+
+
+
+
+<p>The function</p><a name="uri_ob">
+<p class="fablfunction">string uri(Resource rs)
+</p></a>
+returns the the URI of rs, if any. <p>
+
+<p>For example:</p>
+
+<pre class=longpre>
+uri(rdf:type);
+-->http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+</pre>
+
+
+<p>The variant </p><a name="allocate_string_class">
+<p class="fablfunction">Resource allocate(string qname,Class cl)
+</p></a>
+
+
+<p>allocates the resource and also assigns it the given type.</p>
+
+
+<p>For example,</p> 
+
+<pre class=longpre>
+allocate("ex:myproperty",rdf:Property);
+</pre>
+
+
+<a name="property"/>
+<p>
+allocates a resource of type <b>rdf:Property</b> - that is to say, an RDF property. A property
+can have more than one value on a single resource. That is, there can be arbitrarily many
+triples <b>&lt;S,P,O<sub>1</sub>&gt;</b> ... with the same subject <b>S</b> and property <b>P</b>. However,
+the class <b>owl:FunctionalProperty</b> represents the set of properties <b>P</b> that take on at most
+a single value on any subject <b>S</b>.  </p>
+
+
+<pre class=longpre>
+allocate("ex:myFunctionalProperty",owl:FunctionalProperty);
+</pre><p>
+
+<p>allocates a functional property. </p>
+
+<p>An anonymous resource is one with no URI.  The function </p>
+
+
+
+<pre>
+<b>&lt;value-of-type tp&gt; function new(Class tp)</b>
+</pre>
+
+<p>creates an anonymous resource of the specified type.  For example:</p>
+
+<pre>
+var aa = new(Resource);
+</pre>
+
+
+<p>In Fabl, anonymous properties are not allowed; Properties should be created with allocate , not <b>new</b>.</p>
+
+</div>
+</body>
+</html>

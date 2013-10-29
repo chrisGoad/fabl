@@ -1,0 +1,325 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Classes</span></center><p style="height:1em"></p>
+<p class="subheading">Open and closed objects</p>
+
+<p>
+Fabl uses the OWL formalism for defining classes. This results in a class system
+that departs significantly  from those found in 
+traditional strongly-typed programming environments such as Java,C++, or C#.
+In these traditional environments,
+a <i>class</i> is the mechanism by which legal properties (aka <i>members</i> or <i>instance variables</i>)
+of objects 
+(aka <i>resources</i>) are introduced. 
+That is, an object as traditionally defined may possess only those properties 
+ explicitly mentioned in the definition
+of the classes to which it belongs. 
+Furthermore, once the object is created, no new properties
+can be added.  In this sense, objects in traditional environments can be characterized as
+<i>closed</i>. </p>
+
+<p>In OWL, the opposite approach is taken:
+ classes serve to restrict an otherwise free graph  of resources
+and properties.  An object may possess  any property with any value, except
+as restricted by class definitions (or by domain and range restrictions on properties).  
+Furthermore, an object may be assigned new properties, and take on new 
+class memberships, over the course of time. In this sense, OWL (and therefore Fabl) supports
+<i>open</i> objects.</p>
+
+<p>Concretely, in OWL (and Fabl) a <i>class</i> denotes a set of RDF resources.    
+A class is defined by specifying
+conditions that must be met by resources belonging to the class, or by specifying
+relationships to other classes that have already been defined.</p>
+Direct conditions on member resources are expressed by <i>property restrictions</i>.
+A property restriction asserts that 
+a property, when applied to a resource in the class,
+must take on a set of values with restricted type, value or cardinality.
+</p>
+
+<p class="subheading">Class definition syntax</p>
+
+<p>
+In Fabl, classes can be defined by direct use of OWL primitives.  However, an alternative
+syntax is provided that is more concise and  legible.
+This syntax will be described first, followed by the details of how it is implemented
+using OWL. 
+
+ <p>
+ The function </p>
+<a name="class_string">
+<p class="fablfunction">void class(string name)
+</p></a>
+<p>introduces a new class with the given qualified name, and
+switches the Fabl interpreter into a special mode in which restrictions
+can be asserted. The syntax for 
+restriction statements is:</p>
+
+<pre>
+restrict <i>Property</i> {<i>restriction</i><sub>0</sub>;...;<i>restriction</i><sub>n</sub>}
+</pre>
+
+The following varieties of restriction are recognized by Fabl. Each restriction
+applies to the property <i>when applied to members of the class being defined</i>
+(and not to the property applied to other varieties of object).  Links are included
+to the corresponding OWL definitions.
+
+<pre>
+maxCardinality 1;
+</pre>
+
+<p>asserts that the property has at most one value. 
+<a href="http://www.w3.org/TR/2004/REC-owl-ref-20040210/#maxCardinality-def">owl:maxCardinality</a></p>
+
+<pre>
+cardinality 1;
+</pre>
+
+<p>asserts that the property has exactly one value.
+<a href="http://www.w3.org/TR/2004/REC-owl-ref-20040210/#cardinality-def">owl:cardinality</a></p>
+
+
+<pre>
+allValuesFrom <i>Type</i>;
+</pre>
+
+<p>asserts that all values of the property must belong to the the given <i>Type</i>.
+<a href="http://www.w3.org/TR/2004/REC-owl-ref-20040210/#allValuesFrom-def">owl:allValuesFrom</a></p>
+
+
+<pre>
+hasValue <i>value</i>;
+</pre>
+
+<p>asserts that the property 
+must take on the specified value; the property may take on other values as well
+if its cardinality in not restricted.
+<a href="http://www.w3.org/TR/2004/REC-owl-ref-20040210/#hasValue-def">owl:hasValue</a></p>
+
+
+<p>OWL supports additional kinds of restrictions, and also additional kinds of assertions
+about classes, beyond those covered by Fabl restriction statements.  These additional 
+constructs
+can be formulated as direct RDF assertions
+in the Fabl context, but the Fabl implementation makes no computational use of them
+(hence their exclusion, at least for now, from the restrict syntax).</p>
+
+<p class="releasenote">In version 2.0.11, only those OWL constructs used in Fabl are present
+in the initial Fabl environment (eg <b>owl:intersectionOf</b> is not present  in the
+Fabl triple store at start up).  </p>
+
+
+The mode in which restrictions are added to a class
+is terminated by the function:</p><a name="endClass">
+<p class="fablfunction">void endClass()
+</p></a>
+<p>The variant:</p><a name="class_string_seqclass">
+<p class="fablfunction">void class(string name,SeqOf(Class) subclasses)
+</p></a>
+<p>asserts that the new class is an <b>rdfs:subClassOf</b>
+of each of the classes supplied as the second argument.</p>
+
+<p class="subheading">Example</p>
+
+<p>In the following example, the class <b>Point</b> having <b>x</b> and <b>y</b> coordinates is defined
+in the <a href="http://www.mapbureau.com/rdfgeom2d1.0/">geom2d</a> namespace. </p>
+
+<pre class=longpre>
+namespace('geom2d',"http://nurl.org/0/geom2d/1.0/");
+allocate("geom2d:x",FunctionalProperty);
+allocate("geom2d:y",FunctionalProperty);
+
+
+class("geom2d:Point");
+restrict geom2d:x {cardinality 1;allValuesFrom double}
+restrict geom2d:y {cardinality 1;allValuesFrom double}
+endClass();
+
+</pre>
+<p>
+<p>The effect of the line</p>
+<pre class=shortpre>
+restrict geom2d:x {cardinality 1;allValuesFrom double}
+</pre>
+
+<p>is to assert that the property <b>geom2d:x</b>, 
+when applied to any object in the class <b>geom2d:Point</b>, 
+takes on exactly one value, and that the value  is
+of type <b>double</b>. </p>
+
+
+<p>Given the above class definition, 
+Fabl is able to determine the type and  cardinality of
+ <b>E.geom2d:x</b> for expressions <b>E</b> of type <b>geom2d:Point</b>.
+In consequence, code such as the following
+can be implemented to manipulate members of the new class:</p>
+
+<pre class=longpre>
+geom2d:Point function plus(geom2d:Point p,geom2d:Point q)
+{
+   var geom2d:Point rs;
+   rs = new(geom2d:Point);
+   rs . geom2d:x = p.geom2d:x + q.geom2d:x;
+   rs . geom2d:y = p.geom2d:y + q.geom2d:y;
+   return rs;
+}
+</pre>
+
+
+<p>Here is alternative Fabl code that implements <b>geom2d:Point</b> using OWL primitives 
+directly:</p>
+
+<pre class=longpre>
+allocate("geom2d:Point",Class);
+
+// geom2d:x is a double
+var r = new(owl:Restriction);
+r.owl:onProperty = geom2d:x;
+r.owl:allValuesFrom = double;
+geom2d:Point..rdfs:subClassOf = r;
+
+//geom2d:x takes on exactly one value:
+var r = new(owl:Restriction);
+r.owl:onProperty = geom2d:x;
+r.owl:cardinality = 1;
+geom2d:Point..rdfs:subClassOf = r;
+
+// geom2d:y is a double
+var r = new(owl:Restriction);
+r.owl:onProperty = geom2d:y;
+r.owl:allValuesFrom = double;
+geom2d:Point..rdfs:subClassOf = r;
+
+//geom2d:y takes on exactly one value:
+var r = new(owl:Restriction);
+r.owl:onProperty = geom2d:y;
+r.owl:cardinality = 1;
+geom2d:Point..rdfs:subClassOf = r;
+
+initialize(geom2d:Point);
+</pre>
+
+<p>The <b>initialize</b> function:</p>
+<a name="initialize_class">
+<p class="fablfunction">void initialize(Class cl)
+</p></a>
+sets up internal data strutures whose purpose is to make Fabl's determination 
+of type information more efficient.   <b>endClass</b> accomplishes the same purpose
+in the context of the syntax described earlier.  <b>initialize</b> should be
+performed after all subclass properties  of a new class have been asserted.</p>
+
+
+<p>In Fabl,  new classes can be added
+as a computation progresses simply by asserting new values of the property
+<b>rdf:type</b>. Here is an example: </p>
+
+<pre class=longpre>
+var p = new(Resource);
+// p is not a Point yet
+p .. rdf:type = geom2d:Point;
+// now it is; 
+// however the global variable p is still 
+// of type Resource, not geom2d:Point
+var q = p ~ geom2d:Point; 
+q.geom2d:x;
+-->0.0
+</pre>
+
+<a name="method"><p class="subheading">Methods</p></a>
+
+<p>The role served by methods in traditional environments is taken over in Fabl
+by other, simpler, constructs.    Concretely, the role of
+a static method <b>M</b> of a class <b>C</b> is served   by a polymorphic function
+that takes values of type <b>C</b> as its first argument. Instead of writing</p>
+
+<pre>
+x.M(a0,..an)
+</pre>
+
+<p>
+one writes
+</p>
+
+<pre>
+M(x,a0,...an)
+</pre>
+
+<p>
+A dynamic method is represented simply as a property with functional values, as in
+</p>
+
+<pre>
+restrict mymethod {allValuesFrom Function(resulttype, inputType0, .. inputTypen)}
+</pre>
+
+The elaborate  support
+for methods in traditional environments serve many purposes related
+to both to computational efficiency and expressiveness, and no claim is made
+here that Fabl addresses all of these purposes with simlilar effectiveness. 
+The point  is only that  
+the <i>basic</i> purposes served by methods - associating
+behaviors with classes - are  addressed by other mechanisms in Fabl.</p>
+
+
+</div>
+</body>
+</html>

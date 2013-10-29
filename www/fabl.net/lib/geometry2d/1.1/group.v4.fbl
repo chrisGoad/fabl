@@ -1,0 +1,127 @@
+
+
+geom2d:Box function bounds(geom2d:Group grp)
+{
+   var SeqOf(geom2d:Shape) els,int ln,i,geom2d:Box rs,cb;
+   els = grp.geom:elements~SeqOf(geom2d:Shape);
+   ln = length(els);
+   if (ln == 0) return nil~geom2d:Box;
+   rs = nil~geom2d:Box;
+   for (i=0;i<ln;i++)
+       {
+	   cb = bounds(els[i]);
+	   if (nnul(cb))
+	      {
+		  if (nul(rs)) rs = cb;
+		  else expandToContain(rs,cb);
+          }
+       }
+   return rs;
+}
+
+delegate(bounds[geom2d:Shape],bounds[geom2d:Group]);
+
+
+
+geom2d:Group function mkGroup(SeqOf(geom2d:Shape) els)
+{
+   var geom2d:Group rs;
+   rs  = new(geom2d:Group);
+   rs . geom:elements = els;
+   return rs;
+}
+
+// flattens as much as possible; ie accumulates group elements in arguments into
+// the elements of the result
+
+geom2d:Shape function group(SeqOf(geom2d:Shape) els)
+{
+   var SeqOf(geom2d:Shape) nels,int ln,i,geom2d:Shape cel,geom2d:Group grp;
+   ln = length(els);
+   if (ln == 1) return els[0];
+   nels = new(SeqOf(geom2d:Shape));
+   for (i=0;i<ln;i++)
+       {
+	   cel = els[i];
+	   if (hasType(cel,geom2d:Group)) 
+	      {
+		  grp = cel~geom2d:Group;
+		  nels * (grp.geom:elements);
+		  }
+	   else
+	      push(nels,cel);
+	   }
+  return mkGroup(nels)~geom2d:Shape;
+}
+
+
+
+var Function(void,SeqOf(geom2d:Shape),geom2d:Group,Class)  extractShapes;
+	   
+void function extractShapes(SeqOf(geom2d:Shape) rs,geom2d:Group ig,Class tp)
+{
+   var SeqOf(geom2d:Shape) els,geom2d:Shape ce,int ln,i;
+   els = ig.geom:elements;
+   ln = length(els);
+   for (i=0;i<ln;i++)
+       {
+	   ce = els[i];
+	   if (hasType(ce,geom2d:Group))
+	      extractShapes(rs,ce~geom2d:Group,tp);
+	   else
+	   if (hasType(ce,tp)) push(rs,ce);
+	   }
+}
+
+
+
+SeqOf(geom2d:Shape) function extractShapes(geom2d:Group ig,Class tp)
+{
+   var SeqOf(geom2d:Shape) rs;
+   rs = new(SeqOf(geom2d:Shape));
+   extractShapes(rs,ig,tp);
+   return rs;
+}
+
+void function extractShapes(SeqOf(geom2d:Shape) rs,geom2d:Shape shp,Class tp)
+{
+  if (hasType(shp,tp)) push(rs,shp);
+  else
+  if (hasType(shp,geom2d:Group)) extractShapes(rs,shp~geom2d:Group,tp);
+}
+
+
+
+SeqOf(geom2d:Shape) function extractShapes(geom2d:Shape shp,Class tp)
+{
+   var SeqOf(geom2d:Shape) rs;
+   rs = new(SeqOf(geom2d:Shape));
+   extractShapes(rs,shp,tp);
+   return rs;
+}
+
+
+geom2d:Shape function aggregate(SeqOf(geom2d:Shape) shps)
+{
+   var int ln,i,SeqOf(geom2d:Shape) els,geom2d:Shape shp,geom2d:Group sgrp,rs;
+   ln = length(shps);
+   if (ln == 0) return nil ~ geom2d:Shape;
+   if (ln == 1) return shps[0];
+   els = new(SeqOf(geom2d:Shape));
+   for (i = 0;i<ln;i++)
+       {
+	   shp = shps[i];
+	   if (hasType(shp,geom2d:Group))
+	      {
+		  sgrp = shp ~ geom2d:Group;
+		  els * (sgrp.geom:elements);
+		  }
+	   else
+	      push(els,shp);
+	   }
+   rs = new(geom2d:Group);
+   rs . geom:elements = els;
+   return rs;
+}
+
+

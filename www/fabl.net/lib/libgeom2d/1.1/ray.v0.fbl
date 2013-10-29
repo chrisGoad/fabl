@@ -1,0 +1,20 @@
+
+
+geom2d:Ray function mkRay(geom2d:Point ep,geom2d:Point d)
+{
+   var geom2d:Ray rs;
+   rs = new(geom2d:Ray);
+   rs . geom:direction = d;
+   rs . geom:end0 = ep;
+   return rs;
+}
+
+
+geom2d:Ray function mkRay(geom2d:Point ep,double d)
+{
+   var geom2d:Ray rs;
+   rs = new(geom2d:Ray);
+   rs . geom:direction = unitVector(d);
+   rs . geom:end0 = ep;
+   return rs;
+}

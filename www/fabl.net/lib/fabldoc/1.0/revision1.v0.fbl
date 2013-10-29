@@ -1,0 +1,227 @@
+/*
+compile("file://../lib/fabldoc/1.0/revision1.fb","file://../lib/fabldoc/1.0/revision1.fbl");
+*/
+
+install(namespace('discovery1'));
+discovery1:namespaces();
+discovery1:discovery();
+
+
+
+setHomeAndTopic(namespace('fabldoc'));
+startCollectingTriples();
+
+var theFunctions = new(SeqOf(Function));
+var theMacros = new(SeqOf(Function));
+
+//stdNamespaces();
+
+allocate('fabldoc:documentor',FunctionalProperty);
+allocate('fabldoc:manualEntry',FunctionalProperty); // entry in the manual for the fellow
+
+
+//var uu = mkResource();
+//uu.home:docGenerator = mkResource();
+
+// a documentor takes the thing being documented as its first argument
+// and a style description as the second
+
+
+fabldoc:documentor.rdfs:range = Function(void,string,ob,ob);
+
+
+class('fabldoc:ManualEntry');
+restrict fabldoc:page {cardinality 1;allValuesFrom id}
+restrict fabldoc:anchor {cardinality 1;allValuesFrom id}
+endClass();
+
+
+// until the old variants are removed from manualsrc
+var cPageId = 'none';
+
+fabldoc:ManualEntry function mkManualEntry(id pg,a)
+{
+  var fabldoc:ManualEntry rs;
+  rs  = new(fabldoc:ManualEntry);
+  rs . page = cPageId;
+//  rs . page = pg;
+  rs . anchor = a;
+  return rs;
+}
+
+
+fabldoc:ManualEntry function mkManualEntry(id a)
+{
+  return mkManualEntry(cPageId,a);
+}
+
+
+fabldoc:manualEntry.rdfs:range = fabldoc:ManualEntry;
+
+void function setDocumentor(ob x,id fnm)
+{
+   var Function(void,string,ob,ob) fn;
+   fn = getVariant(home,fnm,sequence(string,ob,ob))~Function(void,string,ob,ob);
+   if (nul(fn)) error("Missing doc generator",fnm);
+   x . home:documentor = fn;
+}
+
+
+
+
+
+void function documentation(string rs,ob x,ob st)
+{
+   var Function(void,string,ob,ob) dc;   
+   dc = x . home:documentor;
+   if (nul(dc)) rs * '<undocumented>';
+   dc(rs,x,st);
+}
+
+
+
+
+void function functionDescription(string bf,Function fn,SeqOf(id) anms,ob style)
+{
+   var Class tp,rtp,id nm,SeqOf(Class) itps,int ln,i,fabldoc:ManualEntry me,id a;
+   me = fn.fabldoc:manualEntry;
+   a = me.fabldoc:anchor;
+   tp = fn.Function:type;
+   nm = fn.Function:name;
+   itps = inputTypes(tp);
+   rtp = resultType(tp);
+   writeTo(bf,'<a name="',a,'">',lf);
+   writeTo(bf,'<p class="fablfunction">');
+   writeTo(bf,rtp,' ',nm,'(');
+   ln = length(itps);
+   for (i=0;i<ln;i++)
+       {
+	   writeTo(bf,itps[i],' ',anms[i]);
+	   if (i < (ln-1)) bf * ',';
+	   }
+   writeTo(bf,')',lf,'</p></a>',lf);
+  push(theFunctions,fn);
+}
+
+var theClasses = new(SeqOf(Class));
+
+void function addManualEntry(Class cl,id anchor)
+{
+  cl.manualEntry = mkManualEntry(anchor);
+  push(theClasses,cl);
+}
+
+// often a page is devoted to a class
+
+
+void function addManualEntry(Class cl)
+{
+  cl.manualEntry = mkManualEntry(nil~id);
+  push(theClasses,cl);
+}
+
+
+var theGlobals = new(SeqOf(id));
+
+var globalEntries = new(ob);
+
+void function addManualEntry(id nm,id anchor)
+{
+  set(globalEntries,regarding(nm),mkManualEntry(anchor));
+  push(theGlobals,nm);
+}
+
+
+
+void function classLink(string bf,Class cl)
+{
+   var fabldoc:ManualEntry me,id a,pg,nm;
+   me = cl.fabldoc:manualEntry;
+   nm = name(cl);
+   if (nul(me)) 
+      {
+	  bf * nm;
+	  return;
+	  }
+   a = me.fabldoc:anchor;
+   pg = me.page;
+   if (nnul(a))
+      bf * "<a href = \"{pg}.html#{a}\">{nm}</a>";
+   else
+      bf * "<a href = \"{pg}.html\">{nm}</a>";
+
+}
+void function genFunDescription(string s,Function fn,string lnk)
+{
+  var id nm,Sort tp,SeqOfType itps,Sort rtp,int ln,lnm1,i;
+  nm = fn .name;
+  tp = fn . type;
+  rtp = resultType(tp);
+  itps = inputTypes(tp);
+  writeTo(s,"<a href=\"lnk\">nm</a>",'(');
+  ln =length(itps);
+  lnm1 = ln-1;
+  for (i = 0;i<ln;i++) 
+      {
+	  classLink(s,itps[i]);
+	  if (i < lnm1) s * ',';
+	  }
+  writeTo(s,') => ',rtp);
+}
+
+
+void function functionLink(string bf,Function fn)
+{
+   var fabldoc:ManualEntry me,id a,pg;
+   me = fn.fabldoc:manualEntry;
+   a = me.fabldoc:anchor;
+   pg = me.page;
+   bf * "<a href = \"{pg}.html#{a}\">{fn}</a>";
+}
+
+
+
+
+
+
+
+
+void function macroDescription(string bf,Function fn,string txt,ob style)
+{
+   var Class tp,rtp,id nm,SeqOf(Class) itps,int ln,i,fabldoc:ManualEntry me,id a;
+   me = fn.fabldoc:manualEntry;
+   a = me.fabldoc:anchor;
+   tp = fn.Function:type;
+   nm = fn.Function:name;
+   writeTo(bf,'<a name="',a,'">',lf);
+   writeTo(bf,'<p class="fablfunction">');
+   writeTo(bf,txt);
+   writeTo(bf,lf,'</p></a>',lf);
+  push(theMacros,fn);
+}
+
+void function genLink(string bf,Function fn)
+{
+   var Class tp,rtp,id nm,SeqOf(Class) itps,int ln,i,fabldoc:ManualEntry me,id a,pg;
+   me = fn.fabldoc:manualEntry;
+   a = me.fabldoc:anchor;
+   pg = me.fabldoc:page;
+   tp = fn.Function:type;
+   nm = fn.Function:name;
+   itps = inputTypes(tp);
+   rtp = resultType(tp);
+   writeTo(bf,'<a href="',pg,'.html#',a,'">');
+   writeTo(bf,nm,'[');
+   ln = length(itps);
+   for (i=0;i<ln;i++)
+       {
+	   writeTo(bf,itps[i]);
+	   if (i < (ln-1)) bf * ',';
+	   }
+   writeTo(bf,']</a>');
+ }   
+
+
+
+
+  
