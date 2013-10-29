@@ -1,5 +1,0 @@
-
-var Function(geom2d:Box,geom2d:Shape) bounds;// delegated
-
-
-
