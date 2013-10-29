@@ -1,0 +1,145 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="/lib/style.css"/><title>geom2d</title></head>
+<body>
+<div style="position:static;width:98%;padding-left:2em;padding-right-2em;padding-top:3em;padding-bottom:5em;"><center><b>Namespace geom2d</b></center>
+<p>URI = http://fabl.net/vocabularies/geometry2d/1.1</p>
+<p><a href="#classes">Classes</a><br/><a href="#properties">Properties</a><br/><a href="#functions">Functions</a><br/><a href="#globals">Globals</a><br/></p><a name="classes"/><p><b>----CLASSES---</b></p>
+<p style="classheader"><a name="class_Box"><b>Class geom2d:Box</b></a></p>
+<p class="classbody">
+class('geom2d:Box');<br/>
+restrict geom:xmin {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom:xmax {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom:ymin {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom:ymax {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Shape">geom2d:Shape</a>, <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Box">geom:Box</a></p>
+<p style="classheader"><a name="class_Circle"><b>Class geom2d:Circle</b></a></p>
+<p class="classbody">
+class('geom2d:Circle');<br/>
+restrict geom:center {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+restrict geom:radius {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+endClass();<br/>
+</p></p>
+<p style="classheader"><a name="class_ClosedCurve"><b>Class geom2d:ClosedCurve</b></a></p>
+<p class="classbody">
+class('geom2d:ClosedCurve');<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Curve">geom2d:Curve</a>, <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_ClosedCurve">geom:ClosedCurve</a></p>
+<p style="classheader"><a name="class_Curve"><b>Class geom2d:Curve</b></a></p>
+<p class="classbody">
+class('geom2d:Curve');<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Shape">geom2d:Shape</a>, <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Curve">geom:Curve</a></p>
+<p style="classheader"><a name="class_CurveSegment"><b>Class geom2d:CurveSegment</b></a></p>
+<p class="classbody">
+class('geom2d:CurveSegment');<br/>
+restrict geom:end0 {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+restrict geom:end1 {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Curve">geom2d:Curve</a>, <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_CurveSegment">geom:CurveSegment</a></p>
+<p style="classheader"><a name="class_FilledCurve"><b>Class geom2d:FilledCurve</b></a></p>
+<p class="fablcomment">The interior of a non-self-intersecting ClosedCurve</p>
+<p class="classbody">
+class('geom2d:FilledCurve');<br/>
+restrict geom:boundary {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_ClosedCurve">geom2d:ClosedCurve</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Shape">geom2d:Shape</a></p>
+<p style="classheader"><a name="class_Group"><b>Class geom2d:Group</b></a></p>
+<p class="classbody">
+class('geom2d:Group');<br/>
+restrict geom:elements {allValuesFrom SeqOf(<a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Shape">geom2d:Shape</a>);cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Group">geom:Group</a>, <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Shape">geom2d:Shape</a></p>
+<p style="classheader"><a name="class_Line"><b>Class geom2d:Line</b></a></p>
+<p class="fablcomment">The set of points (x,y) satisfying the equation  u*x + v*y + w = 0</p>
+<p class="classbody">
+class('geom2d:Line');<br/>
+restrict geom2d:u {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:v {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:w {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+endClass();<br/>
+</p></p>
+<p style="classheader"><a name="class_LineSegment"><b>Class geom2d:LineSegment</b></a></p>
+<p class="classbody">
+class('geom2d:LineSegment');<br/>
+restrict geom:end0 {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+restrict geom:end1 {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_CurveSegment">geom2d:CurveSegment</a>, <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_LineSegment">geom:LineSegment</a></p>
+<p style="classheader"><a name="class_Matrix"><b>Class geom2d:Matrix</b></a></p>
+<p class="fablcomment">Corresponds to the matrix transform definition in SVG</p>
+<p class="classbody">
+class('geom2d:Matrix');<br/>
+restrict geom2d:a {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:b {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:c {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:d {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:e {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom2d:f {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Transformation">geom2d:Transformation</a></p>
+<p style="classheader"><a name="class_Point"><b>Class geom2d:Point</b></a></p>
+<p class="classbody">
+class('geom2d:Point');<br/>
+restrict geom:x {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+restrict geom:y {allValuesFrom <a href = "/manual-2.0.10/double.html">xsd:double</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Point">geom:Point</a>, <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Shape">geom2d:Shape</a></p>
+<p style="classheader"><a name="class_Polygon"><b>Class geom2d:Polygon</b></a></p>
+<p class="fablcomment">A FilledCurve whose boundary is a Polyline</p>
+<p class="classbody">
+class('geom2d:Polygon');<br/>
+restrict geom:boundary {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Polyline">geom2d:Polyline</a>;cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_FilledCurve">geom2d:FilledCurve</a></p>
+<p style="classheader"><a name="class_Polyline"><b>Class geom2d:Polyline</b></a></p>
+<p class="classbody">
+class('geom2d:Polyline');<br/>
+restrict geom:points {allValuesFrom SeqOf(<a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>);cardinality 1}<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Curve">geom2d:Curve</a>, <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Polyline">geom:Polyline</a></p>
+<p style="classheader"><a name="class_Ray"><b>Class geom2d:Ray</b></a></p>
+<p class="fablcomment">The set of points (x,y) of the form end0 + t*direction, for t >= 0</p>
+<p class="classbody">
+class('geom2d:Ray');<br/>
+restrict geom:end0 {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+restrict geom:direction {allValuesFrom <a href = "/lib/geometry2d/1.1/revision2.fabldoc.html#class_Point">geom2d:Point</a>;cardinality 1}<br/>
+endClass();<br/>
+</p></p>
+<p style="classheader"><a name="class_Shape"><b>Class geom2d:Shape</b></a></p>
+<p class="fablcomment">A geom:Shape with geom:minDimension >= 2</p>
+<p class="classbody">
+class('geom2d:Shape');<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Shape">geom:Shape</a></p>
+<p style="classheader"><a name="class_SVGPath"><b>Class geom2d:SVGPath</b></a></p>
+<p class="fablcomment">A curve defined using the SVG path syntax</p>
+<p class="classbody">
+class('geom2d:SVGPath');<br/>
+restrict geom2d:pathData {allValuesFrom <a href = "/manual-2.0.10/string.html">xsd:string</a>;cardinality 1}<br/>
+endClass();<br/>
+</p></p>
+<p style="classheader"><a name="class_Transformation"><b>Class geom2d:Transformation</b></a></p>
+<p class="fablcomment">The class of all functions with geom2d:Point as domain and range</p>
+<p class="classbody">
+class('geom2d:Transformation');<br/>
+endClass();<br/>
+</p><p>Subclass of: <a href = "/lib/geometry/1.1/revision2.fabldoc.html#class_Transformation">geom:Transformation</a></p>
+<a name="properties"/><p><b>----PROPERTIES----</b></p>
+<p style="propertyheader"><a name="property_a"><b>Property geom2d:a</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_b"><b>Property geom2d:b</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_c"><b>Property geom2d:c</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_d"><b>Property geom2d:d</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_e"><b>Property geom2d:e</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_f"><b>Property geom2d:f</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_pathData"><b>Property geom2d:pathData</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_points"><b>Property geom2d:points</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_u"><b>Property geom2d:u</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_v"><b>Property geom2d:v</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_w"><b>Property geom2d:w</b></p><p class="separator"></p>
+<a name="functions"/><p><b>----FUNCTIONS---</b></p>
+<a name="globals"/><p><b>----GLOBALS---</b></p>
+<p style="globalheader"><a name="global_path"><b>Global variable path</b></p><p>Type: SeqOf(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>)</p>
+<p class="separator"></p>
+<div style="text-align:center;position:static;width:98%;padding-left:2em;padding-right-2em;height:3em;padding-top:1em;padding-bottom:1em;"><center><span style="font-size: 7pt;">©Copyright 2003, 2004 Map Bureau. All rights reserved.</span></center></div></body>
+</html>

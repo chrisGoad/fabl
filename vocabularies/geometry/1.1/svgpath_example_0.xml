@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?> 
+<rdf:RDF 
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:geom="http://fabl.net/vocabularies/geometry/1.0/"
+  xmlns:geom2d="http://fabl.net/vocabularies/geometry2d/1.0/"  
+  xmlns:map="http://nurl.org/0/geography/map/1.0/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+>
+<geom2d:SVGPath rdf:resource="http://example.org/svgpath_example_0">
+     <dc:description>
+	 A three-point approximation to a section of the railroad tracks in Astoria,Oregon (wgs84)
+	 </dc:description>
+	 <geom2d:pathData>M -123.835414 46.191617 L -123.821983 46.189905 L -123.786728 46.197524</geom2d:pathData>
+	<map:srs resource=
+            "http://nurl.org/0/geography/SRSCatalog/wgs84"/>
+</geom2d:SVGPath>
+</rdf:RDF>

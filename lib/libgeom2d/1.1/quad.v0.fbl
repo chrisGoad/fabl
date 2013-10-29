@@ -1,0 +1,333 @@
+// quad tree
+/*
+install('libgeom2d');
+setHome('libgeom2d');
+*/
+
+allocate("libgeom2d:QuadTree",Class);
+allocate("libgeom2d:QuadRoot",Class);
+
+
+class("libgeom2d:QuadTree");
+var libgeom2d:QuadTree q00; // lower left
+var libgeom2d:QuadTree q10; // lower right
+var libgeom2d:QuadTree q01; // upper left
+var libgeom2d:QuadTree q11; // upper right
+var libgeom2d:QuadTree parent;
+var libgeom2d:QuadRoot root;
+var geom2d:Box extent;
+var SeqOf(geom2d:Shape) contents; // for now, only geom2d:Points are supported
+var int depth;
+var  int libgeom2d:quadTreeBooles;
+endClass();
+
+
+class("libgeom2d:QuadRoot");
+var libgeom2d:QuadTree quadTree; 
+var int maxCount; // length(contents) of each cell is kept at or below maxCount, unless maxDepth has been reached
+var int maxDepth; // length(contents) of each cell is kept at or below maxCount, unless maxDepth has been reached
+var  int libgeom2d:quadRootBooles;
+endClass();
+
+
+allocate("libgeom2d:pointsOnly",FunctionalProperty);
+
+defineBitField(libgeom2d:QuadRoot,libgeom2d:pointsOnly,libgeom2d:quadRootBooles,0);
+
+
+libgeom2d:QuadTree function mkQuadTree(libgeom2d:QuadRoot rt,libgeom2d:QuadTree pr,geom2d:Box bx)
+{
+   var libgeom2d:QuadTree rs;
+   rs = new(libgeom2d:QuadTree);
+   rs . extent = bx;
+   rs . quadTreeBooles = 0;
+   rs . contents = new(SeqOf(geom2d:Shape));
+   rs . parent = pr;
+   if (nul(pr)) rs . depth = 0; else
+   rs . depth = pr.depth + 1;
+   rs . root = rt;
+   return rs;
+}
+
+var defaultMaxCount = 8;
+var defaultMaxDepth = 10;
+
+libgeom2d:QuadRoot function mkQuadRoot(geom2d:Box bx)
+{
+   var libgeom2d:QuadTree qt,libgeom2d:QuadRoot rs;
+   rs = new(libgeom2d:QuadRoot);
+   rs . maxDepth = defaultMaxDepth;
+   rs . maxCount = defaultMaxCount;
+   qt = mkQuadTree(rs,nil~libgeom2d:QuadTree,bx);
+   rs . quadTree = qt;
+   return rs;
+}
+
+
+
+
+
+// just the tree; nothing is done about contents
+
+void function partition0(libgeom2d:QuadTree qt)
+{
+   var geom2d:Box bx,double xmin,xmax,ymin,ymax,cx,cy,hwd,hht,
+       libgeom2d:QuadRoot rt;
+   if (nnul(qt.q00)) return; //already partitioned
+   bx = qt.extent;
+   xmin =  bx.geom:xmin;
+   xmax =  bx.geom:xmax;
+   ymin =  bx.geom:ymin;
+   ymax =  bx.geom:ymax;
+   cx = 0.5 * (xmin+xmax);
+   cy = 0.5 * (ymin+ymax);
+   rt = qt.root;
+   // normally, quad tree extents are square, but its
+   // no trouble to treat the more general case 
+   qt . q00 = mkQuadTree(rt,qt,mkBox(xmin,cx,ymin,cy));
+   qt . q10 = mkQuadTree(rt,qt,mkBox(cx,xmax,ymin,cy));
+   qt . q01 = mkQuadTree(rt,qt,mkBox(xmin,cx,cy,ymax));
+   qt . q11 = mkQuadTree(rt,qt,mkBox(cx,xmax,cy,ymax));
+}
+
+
+
+// assumes pnt lies in qt; returns the child
+// containing the point, with priority  order being
+// q00 q01 q10 q11 if the point lies on a boundary
+libgeom2d:QuadTree function whichChild(libgeom2d:QuadTree qt,geom2d:Point pnt)
+{
+   var geom2d:Box bx,double xmin,xmax,ymin,ymax,cx,cy,px,py,
+       boolean ilx,ily;
+   bx = qt.extent;
+   xmin =  bx.geom:xmin;
+   xmax =  bx.geom:xmax;
+   ymin =  bx.geom:ymin;
+   ymax =  bx.geom:ymax;
+   cx = 0.5 * (xmin+xmax);
+   cy = 0.5 * (ymin+ymax);
+   // normally, quad tree extents are square, but its
+   // no trouble to treat the more general case 
+   px = pnt.geom:x;
+   py = pnt.geom:y;
+   ilx = px <= cx;
+   ily = py <= cy;
+   if (ilx)
+      {
+	  if (ily) return qt.q00;
+	  return qt.q01;
+	  }
+   if (ily) return qt.q10;
+   return qt.q11;
+}
+
+
+// note the priority q00 q10 q01 q11 in which allocation
+// of a point is considered; pnt is assumed to lie in qt.extent
+
+libgeom2d:QuadTree function allocatePoint(libgeom2d:QuadTree qt,geom2d:Point pnt)
+{
+   var libgeom2d:QuadTree wc;
+   wc = whichChild(qt,pnt);
+   push(wc.contents,pnt~geom2d:Shape);
+   return wc;
+}
+
+
+// assumes a pointOnly tree. If all of the points are partitioned to the
+// same child, that child is returned
+
+void function partitionPoints(libgeom2d:QuadTree qt)
+{
+   var SeqOf(geom2d:Point) cn,int i,ln;
+   cn = qt.contents ~SeqOf(geom2d:Point);
+   ln = length(cn);
+   for (i=0;i<ln;i++)  allocatePoint(qt,cn[i]);
+}
+
+
+
+
+// assuming the point lies in qt, find the leaf to which it belongs
+var Function(libgeom2d:QuadTree,libgeom2d:QuadTree,geom2d:Point) findLeaf;
+
+libgeom2d:QuadTree function whichLeaf(libgeom2d:QuadTree qt,geom2d:Point pnt)
+{
+   var libgeom2d:QuadTree wc;
+   if (nul(qt.q00)) return qt; // qt is a leaf
+   wc = whichChild(qt,pnt);
+   return findLeaf(wc,pnt);
+}
+ 
+// ok, the main algorithm: returns the quad to which the addition was done
+
+
+
+var Function(libgeom2d:QuadTree,libgeom2d:QuadTree,geom2d:Point,int,int) addPoint;
+
+libgeom2d:QuadTree function addPoint(libgeom2d:QuadTree qt,geom2d:Point pnt,int mxc,mxd)
+{
+   var SeqOf(geom2d:Shape) cn;
+   if (nul(qt.q00)) // qt is a leaf
+      {
+	  cn = qt.contents;
+	  if ((length(cn) < mxc) || ((qt.depth) == mxd))
+         {
+	     push(cn,pnt~geom2d:Shape);
+	     return qt;
+	     }
+	  partition0(qt);
+	  partitionPoints(qt);
+	  }
+   addPoint(whichChild(qt,pnt),pnt,mxc,mxd)
+}
+
+
+	 
+	 
+
+libgeom2d:QuadTree function addPoint(libgeom2d:QuadRoot rt,geom2d:Point pnt)
+{
+   return addPoint(rt.quadTree,pnt,rt.maxCount,rt.maxDepth);
+}
+
+
+void function addPoints(libgeom2d:QuadRoot rt,SeqOf(geom2d:Point) pnts)
+{
+  var int ln,i;
+  ln = length(pnts);
+  for (i=0;i<ln;i++) addPoint(rt,pnts[i]);
+}
+
+
+var Function(void,string,libgeom2d:QuadTree,id) pprint;
+
+void function pprint(string rs,libgeom2d:QuadTree qt,id nm)
+{
+    var int dp,i;
+    dp = qt.depth;
+	for (i=0;i<dp;i++) rs * "  ";
+	if (nul(qt.q00))
+	   rs * "{nm} count = {length(qt.contents)}\n";
+    else
+	   {
+	   rs * "{nm}\n";
+	   pprint(rs,qt.q00,'q00');
+	   pprint(rs,qt.q10,'q10');
+	   pprint(rs,qt.q01,'q01');
+	   pprint(rs,qt.q11,'q11');
+	   }
+}
+
+var quadTreePrintBuf = "";
+
+void function pprint(libgeom2d:QuadTree qt)
+{
+  reset(quadTreePrintBuf);
+  pprint(quadTreePrintBuf,qt,'root');
+  writeln(quadTreePrintBuf);
+}
+
+
+void function pprint(libgeom2d:QuadRoot qr)
+{
+  pprint(qr.quadTree);
+}
+
+
+/* test
+
+var qr = mkQuadRoot(mkBox(-4,4,-4,4));
+qr . maxCount = 2;
+
+addPoint(qr,mkPoint(3,3));pprint(qr);
+addPoint(qr,mkPoint(-3,-3));pprint(qr);
+addPoint(qr,mkPoint(1,3));pprint(qr);
+addPoint(qr,mkPoint(-3,-2));pprint(qr);
+addPoint(qr,mkPoint(-3.1,-2));pprint(qr);
+
+*/
+// the distance squared from point [px,py] to [qx,qy]
+double function distanceSquared(double px,py,qx,qy)
+{
+   var double xd,yd;
+   xd = qx-px;
+   yd = qy-py;
+   return (xd*xd + yd*yd);
+}
+
+
+   
+boolean function liesWithin(geom2d:Box bx,geom2d:Point pnt,double d)
+{  var double xmin,xmax,ymin,ymax,px,py,ds;
+   xmin =  bx.geom:xmin;
+   xmax =  bx.geom:xmax;
+   ymin =  bx.geom:ymin;
+   ymax =  bx.geom:ymax;
+   px = pnt.geom:x;
+   py = pnt.geom:y;
+   if (px > (xmax + d)) return false;
+   if (px < (xmin - d)) return false;
+   if (py > (ymax + d)) return false;
+   if (py < (ymin - d)) return false;
+   // now, if p lies within d, either 
+   // (1) px lies in  [xmin,xmax] 
+   // (2) py lies in [ymin,ymax]
+   // (3) a corner is within range
+   ds = d*d;
+   if (px < xmin)
+      {
+	  if (py < ymin) return distanceSquared(xmin,ymin,px,py) <= ds;
+	  if (py <= ymax) return true;
+	  return distanceSquared(xmin,ymax,px,py) <= ds;
+	  }
+   if (px < xmax) return true;
+   if (py < ymin) return distanceSquared(xmax,ymin,px,py) <= ds;
+   if (py <= ymax) return true;
+   return distanceSquared(xmax,ymax,px,py) <= ds;
+}
+
+
+
+var Function(void,SeqOf(libgeom2d:QuadTree),libgeom2d:QuadTree,geom2d:Point,double) quadsWithin;
+
+void function quadsWithin(SeqOf(libgeom2d:QuadTree) rs,libgeom2d:QuadTree qt,geom2d:Point  p,double d)
+{
+    var geom2d:Box xt;
+    xt = qt.extent;
+	if (!liesWithin(xt,p,d)) return;
+	if (nul(qt.q00)) 
+	      {
+		  push(rs,qt);
+		  return;
+		  }
+	quadsWithin(rs,qt.q00,p,d);
+	quadsWithin(rs,qt.q10,p,d);
+	quadsWithin(rs,qt.q01,p,d);
+	quadsWithin(rs,qt.q11,p,d);
+}
+
+var quadsBuf = new(SeqOf(libgeom2d:QuadTree));
+
+SeqOf(geom2d:Point) function pointsWithin(libgeom2d:QuadRoot rt,geom2d:Point p,double d)
+{
+    var libgeom2d:QuadTree qt,q,SeqOf(geom2d:Point) rs,cn,int ln,i,j,lnc,
+	    geom2d:Point cp;
+    qt = rt.quadTree;
+    rs = new(SeqOf(geom2d:Point));
+	reset(quadsBuf);
+	quadsWithin(quadsBuf,qt,p,d);
+	ln = length(quadsBuf);
+	for (i=0;i<ln;i++)
+	    {
+		q = quadsBuf[i];
+		cn = q.contents ~ SeqOf(geom2d:Point);
+		lnc = length(cn);
+		for (j = 0;j<lnc;j++)
+		    {
+			cp = cn[j];
+			if (distance(cp,p) < d) push(rs,cp);
+			}
+	    }
+    return rs;
+}

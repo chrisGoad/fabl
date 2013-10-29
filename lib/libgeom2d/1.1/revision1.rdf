@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:fabl="http://nurl.org/0/fabl/"
+>
+<rdfs:Resource rdf:about="http://fabl.net/vocabularies/libgeom2d/1.1">
+<fabl:functionVariants>
+<rdfs:Resource/>
+</fabl:functionVariants>
+</rdfs:Resource>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Box">
+<fabl:classDelegates>
+<rdfs:Resource/>
+</fabl:classDelegates>
+</rdfs:Class>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Shape"/>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Point">
+<fabl:classDelegates>
+<rdfs:Resource/>
+</fabl:classDelegates>
+</rdfs:Class>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/x"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/y"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/xmin"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/xmax"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/ymin"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/ymax"/>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Circle">
+<fabl:classDelegates>
+<rdfs:Resource/>
+</fabl:classDelegates>
+</rdfs:Class>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/radius"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/center"/>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Polyline">
+<fabl:classDelegates>
+<rdfs:Resource/>
+</fabl:classDelegates>
+</rdfs:Class>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/points"/>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Polygon">
+<fabl:classDelegates>
+<rdfs:Resource/>
+</fabl:classDelegates>
+</rdfs:Class>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/boundary"/>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Group">
+<fabl:classDelegates>
+<rdfs:Resource/>
+</fabl:classDelegates>
+</rdfs:Class>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry/1.1/elements"/>
+<rdfs:Class  about="http://fabl.net/vocabularies/geometry2d/1.1/Matrix"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry2d/1.1/a"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry2d/1.1/b"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry2d/1.1/c"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry2d/1.1/d"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry2d/1.1/e"/>
+<rdf:Property rdf:about="http://fabl.net/vocabularies/geometry2d/1.1/f"/>
+<rdf:Property rdf:about="http://xmlns.com/foaf/0.1/topic"/>
+</rdf:RDF>

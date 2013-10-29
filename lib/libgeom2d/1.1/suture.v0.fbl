@@ -1,0 +1,206 @@
+
+/*
+Line2d function mk_Line2d_from_direction(geom2d:Point p1,geom2d:Point dr)
+  {
+  return mk_Line2d1(p1,mk_Point2d(dr.geom:yc,-dr.geom:xc));
+  }
+
+*/
+
+
+
+/* SUTURING */
+
+
+/*
+suture takes a sequence of sequences  points (called parts here) and returns 
+a sequence of connected paths. Each path is a sequence of ints p0, ... pn,
+where pi/2 is the index of the part, and the low bit of pi is 1 if the 
+part should be reversed.
+*/
+
+
+
+// put the input in a global
+
+var sutureInput = new(SeqOf(SeqOf(geom2d:Point)));
+var culledSutureInput = new(SeqOf(SeqOf(geom2d:Point)));// without singletons
+var partEndpoints = new(SeqOf(geom2d:Point));
+var int numEndpoints;
+
+void function buildPartEndPoints()
+{
+   var SeqOf(SeqOf(geom2d:Point)) si,csi,int ln,i,lnp,SeqOf(geom2d:Point) p;
+   reset(partEndpoints);
+   si = sutureInput;
+   reset(culledSutureInput);
+   ln = length(si);
+   for (i=0;i<ln;i++)
+        {
+		p = si[i];
+		lnp = length(p);
+		if (lnp>1) //discard isolated points
+		   {
+		   push(partEndpoints,p[0]);
+		   push(partEndpoints,p[lnp-1]);
+		   push(culledSutureInput,p);
+		   }
+		}
+   numEndpoints = length(partEndpoints);
+}
+
+//var endPointsSorted = nil ~ PermutedDoubles;
+var coincidence_epsilon = 0.1;
+var groupedEndpoints = new(SeqOf(SeqOf(int)));
+var samePointAs = emptysequence(int);
+
+
+
+
+
+
+void function buildSamePointAs()
+{
+   var int ln,i,j,lng,lncg,fp,sp,SeqOf(int) cgr;
+   ln = numEndpoints;
+   // a little dumb; fix sometime
+   reset(samePointAs);
+   for (i=0;i<ln;i++) push(samePointAs,-1);
+   lng = length(groupedEndpoints);
+   for (i = 0;i<lng;i++)
+       {
+	   cgr = groupedEndpoints[i];
+	   lncg = length(cgr);
+	   if (lncg > 1)
+	      {
+		  // more than 2 points is a Y , cross,etc; arbitrarily exclude points other than first 2
+		  // from samePointAs status
+
+		  fp = cgr[0];
+		  sp = cgr[1];
+		  samePointAs[fp] = sp;
+		  samePointAs[sp] = fp;
+		  }
+	    }
+}
+
+
+
+var endPointIsSutured = new(SeqOf(boolean)); // for each endpoint, is it already in the suture?
+
+var suturePaths = new(SeqOf(SeqOf(int)));
+
+ 
+// i is even (ie the startpoint of a part)
+// backwards means traversing backwards from ci
+void function sutureLoop(SeqOf(int) cSuture, int i,boolean backwards)
+{
+   var int ci,ep;
+   ci = i;
+   while  ((ci >= 0) && not(endPointIsSutured[ci])) 
+      {
+	  if (mod(ci,2) == 0)
+		 ep = ci+1;
+	  else
+		 ep = ci-1;	
+	  if (backwards) push(cSuture,ep);	 
+	  else push(cSuture,ci);
+	  // we'll at least be sutureing ci and ci+1
+	  endPointIsSutured[ci] = true;
+	  endPointIsSutured[ep] = true;
+	  ci = samePointAs[ep]; 
+	  }
+}
+
+
+void function reversip(SeqOf(int) sq)
+{
+   var int ln,hln,ln1,i,hi, v;
+   ln = length(sq);
+   hln = ln/2;
+   ln1 = ln-1;
+   for (i=0;i<hln;i++)
+       {
+	   hi = ln1-i;
+	   v = sq[i];
+	   sq[i] = sq[hi];
+	   sq[hi] = v;
+	   }
+ }
+
+
+// i is even
+void function nextSuture(int i)
+{
+   var SeqOf(int) st;
+   if (endPointIsSutured[i]) return;
+   st = new(SeqOf(int));
+   sutureLoop(st,samePointAs[i],true); // backwards
+   reversip(st);
+   sutureLoop(st,i,false);
+   push(suturePaths,st);
+}
+
+       
+SeqOf(SeqOf(int)) function suture(SeqOf(SeqOf(geom2d:Point)) parts)
+{
+   var int ln,i;
+   sutureInput = parts;
+   buildPartEndPoints();
+   groupedEndpoints = groupPoints(partEndpoints,coincidence_epsilon);
+   buildSamePointAs();
+   ln = length(culledSutureInput);
+   reset(suturePaths);
+   reset(endPointIsSutured);
+   for (i=0;i<ln;i++) {push(endPointIsSutured,false);push(endPointIsSutured,false)}
+   for (i=0;i<ln;i++)
+       nextSuture(i*2);
+   return suturePaths;
+}
+
+
+void function appendReversed(SeqOf(ob) x,SeqOf(ob) y)
+{
+   var int i,ln;
+   ln = length(y) -1;
+   for (i = ln; i >=0;i--)
+	   push(x,y[i]);
+}
+
+	     
+SeqOf(SeqOf(geom2d:Point)) 
+   function suturedPaths(SeqOf(SeqOf(geom2d:Point)) parts,
+                         SeqOf(SeqOf(int)) sutures)
+{
+    var SeqOf(SeqOf(geom2d:Point)) rs,SeqOf(int) cst,SeqOf(geom2d:Point) cpath,cp,
+	    int ln,i,j,lns,cpi;
+	    
+   
+    rs = new(SeqOf(SeqOf(geom2d:Point)));
+
+    ln = length(sutures);
+	for (i = 0;i<ln;i++)
+	    {
+		cst = sutures[i];
+		lns = length(cst);
+		cpath = new(SeqOf(geom2d:Point));
+		push(rs,cpath);
+		for (j = 0;j<lns;j++)
+		    {
+		    cpi = cst[j];
+			cp = parts[cpi/2];
+			if (mod(cpi,2) == 0) cpath  * cp;
+			else appendReversed(cpath~SeqOf(ob),cp~SeqOf(ob));
+			if (j < (lns-1)) 
+			   set_length(cpath, length(cpath)-1);//avoid dups
+			}
+	    }
+	 return rs;
+}
+
+
+   
+SeqOf(SeqOf(geom2d:Point)) function suturedPaths()
+{
+   return suturedPaths(culledSutureInput,suturePaths)
+}

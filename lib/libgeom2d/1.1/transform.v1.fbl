@@ -1,0 +1,112 @@
+
+
+// this is delgated
+
+var Function(geom2d:Shape,geom2d:Shape,Function(geom2d:Point,geom2d:Point)) transform;
+
+Function(geom2d:Point,geom2d:Point) function toTransform(geom2d:Matrix mtx)
+{
+   return supplyArgument(times[geom2d:Matrix,geom2d:Point],mtx);
+}
+
+
+geom2d:Shape function transform(geom2d:Shape shp,geom2d:Matrix mtx)
+{
+   return transform(shp,toTransform(mtx));
+}
+
+
+
+
+geom2d:Shape function translate(geom2d:Shape shp,double x,y)
+{
+   return transform(shp,toTransform(mkTranslation(x,y)));
+}
+
+
+geom2d:Shape function translate(geom2d:Shape shp,geom2d:Point v)
+{
+   return transform(shp,toTransform(mkTranslation(v)));
+}
+
+
+
+geom2d:Box function transform(geom2d:Box bx,Function(geom2d:Point,geom2d:Point) trn)
+{
+   var double minx,miny,maxx,maxy,minrsx,minrsy,maxrsx,maxrsy,geom2d:Point minrs,maxrs;
+   minx = bx.geom:xmin;
+   maxx = bx.geom:xmax;
+   miny = bx.geom:ymin;
+   maxy = bx.geom:ymax;
+   minrs = trn(mkPoint(minx,miny));
+   maxrs = trn(mkPoint(maxx,maxy));
+   minrsx = minrs.geom:x;
+   minrsy = minrs.geom:y;
+   maxrsx = maxrs.geom:x;
+   maxrsy = maxrs.geom:y;
+
+   return mkBox(min(minrsx,maxrsx),max(minrsx,maxrsx),
+                 min(minrsy,maxrsy),max(minrsy,maxrsy));
+}
+
+delegate(transform[geom2d:Shape,Function(geom2d:Point,geom2d:Point)],
+        transform[geom2d:Box,Function(geom2d:Point,geom2d:Point)]);
+
+
+SeqOf(geom2d:Point) function transform(
+   SeqOf(geom2d:Point) pnts,Function(geom2d:Point,geom2d:Point) trn)
+{
+   var SeqOf(geom2d:Point) rpnts,int i,ln;
+   rpnts = new(SeqOf(geom2d:Point));
+   ln = length(pnts);
+   for (i=0;i<ln;i++)
+	   push(rpnts,trn(pnts[i]));
+   return rpnts;
+}
+
+
+geom2d:Polyline function transform(
+   geom2d:Polyline ply,Function(geom2d:Point,geom2d:Point) trn)
+{
+   var SeqOf(geom2d:Point) pnts,rpnts,geom2d:Polyline rs;
+   pnts = ply.geom:points;
+   rpnts = transform(pnts,trn);
+   rs = new(geom2d:Polyline);
+   rs . geom:points = rpnts;
+   return rs;
+}
+
+delegate(transform[geom2d:Shape,Function(geom2d:Point,geom2d:Point)],
+        transform[geom2d:Polyline,Function(geom2d:Point,geom2d:Point)]);
+
+
+geom2d:Polygon function transform(
+      geom2d:Polygon  pgn,Function(geom2d:Point,geom2d:Point) trn)
+{
+   return mkPolygon(transform(pgn.geom:boundary,trn));
+}
+
+
+delegate(transform[geom2d:Shape,Function(geom2d:Point,geom2d:Point)],
+        transform[geom2d:Polygon,Function(geom2d:Point,geom2d:Point)]);
+
+
+
+geom2d:Group function transform(geom2d:Group gr,Function(geom2d:Point,geom2d:Point) trn)
+{
+      var SeqOf(geom2d:Shape) els,rels,int i,ln,geom2d:Group rs;
+	  els = gr.geom:elements;
+	  rels = new(SeqOf(geom2d:Shape));
+	  ln = length(els);
+	  for (i=0;i<ln;i++)
+		  push(rels,transform(els[i],trn));
+	  rs = new(geom2d:Group);
+	  rs . geom:elements = rels;
+	  return rs;
+}
+
+
+delegate(transform[geom2d:Shape,Function(geom2d:Point,geom2d:Point)],
+        transform[geom2d:Group,Function(geom2d:Point,geom2d:Point)]);
+
+

@@ -1,0 +1,202 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Libraries</span></center><p style="height:1em"></p><p>The Fabl load and store primitives can support a variety of schemes for code management.
+This section describes one such scheme.</p>
+
+<p>The basic idea is to partition code and other content into libraries; each
+library is assigned a URI.  For example, we have assigned the URI <b>http://fabl.net/vocabularies/libgeom2d/1.1</b>
+to 
+a library of code related to two-dimensional geometry. Use of this
+URI provides the basis for unique naming of  functions and constants; the code 
+itself  (in binary fb form) resides in the file   <b>http://fabl.net/lib/libgeom2d/1.1/revision4.fb</b>.  
+The fact that <b>http://fabl.net/lib/libgeom2d/1.1/revision4.fb</b> implements the 
+functions named under <b>http://fabl.net/vocabularies/libgeom2d/1.1</b> is expressed by the
+RDF triple:</p>
+
+
+<pre>
+&lt;http://fabl.net/vocabularies/libgeom2d/1.1&gt; 
+   rdfs:isDefinedBy 
+   &lt;http://fabl.net/lib/libgeom2d/1.1/revision4.fb&gt;
+</pre>
+
+<p><i>Note</i>: modification in an RDF vocabulary is called a revision rather than a new version if it adds to the vocabulary without changing the meaning of preexisting terms. Revisions do not require use of a new URI for the vocabulary.
+</p>
+
+<p>Similarly, the location of a Fabl implementation of the Dublin Core vocabulary is asserted by</p>
+
+
+<pre>
+&lt;http://purl.org/dc/elements/1.1&gt
+   rdfs:isDefinedBy 
+   &lt;http://fabl.net/lib/dublin_core-1.1.fb&gt;
+</pre>
+
+
+<p>For efficiency and convenience,
+ it is often useful to maintain a local copy
+of code files.  The following triple asserts the availability of such a local copy:</p>
+
+<pre>
+&lt;http://purl.org/dc/elements/1.1&gt
+   rdfs:isDefinedBy 
+   &lt;file://../dublin_core-1.1.fb&gt;
+</pre>
+
+
+<p>(recall that the file URL is interpreted relative to the location of the Fabl executable, in the
+&lt;fablRoot&gt;/bin directory).  The Fabl source code can be found at:</p>
+
+<pre>
+<a href="http://fabl.net/lib/dublin_core-1.1-1.fbl">http://fabl.net/lib/dublin_core-1.1-1.fbl</a>
+</pre>
+
+and
+
+<pre>
+file://../lib/dublin_core-1.1-1.fbl
+</pre>
+
+<p>Thus, the following Fabl command performs compilation:</p>
+
+
+<pre>
+compile("file://../lib/dublin_core-1.1.fb","file://../lib/dublin_core-1.1-1.fbl");
+</pre>
+
+
+<p class="subheading">The discovery  files</p>
+
+
+<p>
+The URIs <b>http://fabl.net/vocabularies/discovery0</b> ,<b>http://fabl.net/vocabularies/discovery1</b>,
+and <b>http://fabl.net/vocabularies/discovery2</b>
+are allocated to functions that define
+namespaces and tell where to find the content of the namespaces. <b>discovery0</b> and
+<b>discovery1</b>  contain
+discovery information for libraries that are shipped with Fabl, while <b>discovery2</b> is 
+for use in Fabl development beyond the core libraries.  The distinction between <b>discovery0</b>
+and <b>discovery1</b> is the degree of stability. <b>discovery0</b> pertains to  vocabularies
+such as Dublin Core and RSS 1.0 that are widely used by the semantic web community, and 
+have been stable for a period of years. <b>discovery1</b> covers libraries of more recent
+vintage, that can be expected to evolve further in the near future. </p>
+
+<p> The <a href="discovery0.fbl">implementation</a> of the <b>discovery0</b>
+namespace, like the other discovery implementations,
+defines a function <b>namespaces()</b> for defining namespace prefixes, and another
+function <b>isDefinedBy()</b> for specifying where to find the content of the namespaces. The
+function <b>discovery()</b> can be invoked to perform both jobs.</p>
+
+
+
+<p>The following code sequence sets up the namespace prefixes and the <b>isDefinedBy</b> data
+as specified in <b>discovery0</b> and <b>discovery1</b>:</p>
+
+<pre>
+stdlibPrefix = "file://../lib/";
+
+load("file://../lib/discovery0.fb");
+discovery0:discovery();
+install('discovery1');
+discovery1:discovery();
+</pre>
+
+
+<p><b>stdlibPrefix</b> is used to designate a standard place to retrieve libraries from; in this
+case it set to the local <b>lib</b> directory.  An <b>install</b> can be used for <b>discovery1</b>
+because <b>discovery0</b> includes the relevant information about <b>discovery1</b>.
+</p>
+
+<p>The above code sequence is included in <b>&lt;installDir&gt;/bin/init.fbl</b>, and as a result,
+Fabl starts up with prefixes and <b>isDefinedBy</b> information for about a dozen
+namespaces. These are in addition to the core namespaces, such as <b>rdf</b>,<b>rdfs</b>,<b>owl</b> and <b>xsd</b>
+that are built into Fabl, and need no installation (as noted in the <a href="namespaces.html">namespaces</a> section).
+</p>
+
+<p>So, at startup time,  libraries implementing the namespaces defined in
+<b>discovery0</b> and <b>discovery1</b>
+are ready for installation by commands such as: </p>
+
+
+<pre>
+install('foaf');
+</pre>
+
+<p> for the popular <b>foaf</b> vocabulary (see <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>).</p>
+
+
+<p> The discovery implementations make  make use of the utility function:</p><a name="isDefinedBy_string_string">
+<p class="fablfunction">void isDefinedBy(string u0,string u1)
+</p></a>
+
+<p>whose implementation is simply:</p>
+ 
+<pre>
+
+void function isDefinedBy(string u0,u1)
+{
+  resource(u0).rdfs:isDefinedBy = resource(u1);
+}
+</pre></div>
+</body>
+</html>

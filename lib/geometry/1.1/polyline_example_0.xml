@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?> 
+<rdf:RDF 
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:geom="http://fabl.net/vocabularies/geometry/1.0/"
+  xmlns:geom2d="http://fabl.net/vocabularies/geometry2d/1.0/"  
+  xmlns:map="http://nurl.org/0/geography/map/1.0/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+>
+<geom2d:Polyline rdf:resource="http://example.org/polyline_example_0">
+     <dc:description>
+	 A three-point approximation to a section of the railroad tracks in Astoria,Oregon (wgs84)
+	 </dc:description>
+	 <geom:points>
+	    <rdf:Seq>
+		   <rdf:li>
+		      <geom2d:Point>
+			     <geom:x>-123.835414</geom:x>
+				 <geom:y>46.191617</geom:y>
+		      </geom2d:Point>
+		   </rdf:li>
+		   <rdf:li>
+		      <geom2d:Point>
+			     <geom:x>-123.821983</geom:x>
+				 <geom:y>46.189905</geom:y>				 
+		      </geom2d:Point>
+		   </rdf:li>
+		   <rdf:li>
+		      <geom2d:Point>
+			     <geom:x>-123.786728</geom:x>
+				 <geom:y>46.197524</geom:y>				 
+		      </geom2d:Point>
+		   </rdf:li>
+		</rdf:Seq>
+	</geom:points>
+	<map:srs resource=
+            "http://nurl.org/0/geography/SRSCatalog/wgs84"/>
+</geom2d:Polyline>
+</rdf:RDF>

@@ -1,0 +1,114 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="/lib/style.css"/><title>fabldoc</title></head>
+<body>
+<div style="position:static;width:98%;padding-left:2em;padding-right-2em;padding-top:3em;padding-bottom:5em;"><center><b>Namespace fabldoc</b></center>
+<p>URI = http://fabl.net/vocabularies/fabldoc/1.0</p>
+<p><a href="#classes">Classes</a><br/><a href="#properties">Properties</a><br/><a href="#functions">Functions</a><br/><a href="#globals">Globals</a><br/></p><a name="classes"/><p><b>----CLASSES---</b></p>
+<p style="classheader"><a name="class_ManualEntry"><b>Class fabldoc:ManualEntry</b></a></p>
+<p class="classbody">
+class('fabldoc:ManualEntry');<br/>
+restrict fabldoc:page {allValuesFrom <a href = "/manual-2.0.10/id.html">fabl:id</a>;cardinality 1}<br/>
+restrict fabldoc:anchor {allValuesFrom <a href = "/manual-2.0.10/id.html">fabl:id</a>;cardinality 1}<br/>
+endClass();<br/>
+</p></p>
+<a name="properties"/><p><b>----PROPERTIES----</b></p>
+<p style="propertyheader"><a name="property_anchor"><b>Property fabldoc:anchor</b></p><p class="separator"></p>
+<p style="propertyheader"><a name="property_documentor"><b>Property fabldoc:documentor</b></p><p>Range: Function(void,string,Resource,Resource)</p>
+<p class="separator"></p>
+<p style="propertyheader"><a name="property_manualEntry"><b>Property fabldoc:manualEntry</b></p><p>Range: <a href = "/lib/fabldoc/1.0/revision1.fabldoc.html#class_ManualEntry">fabldoc:ManualEntry</a></p>
+<p class="separator"></p>
+<p style="propertyheader"><a name="property_page"><b>Property fabldoc:page</b></p><p class="separator"></p>
+<a name="functions"/><p><b>----FUNCTIONS---</b></p>
+<a name="function_addManualEntry"/>
+<p class="fablfunction">addManualEntry(<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>,<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<a name="function_addManualEntry"/>
+<p class="fablfunction">addManualEntry(<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_classLink"/>
+<p class="fablfunction">classLink(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_collectClasses"/>
+<p class="fablfunction">collectClasses(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => SeqOf(<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>)</p>
+<a name="function_collectFunctions"/>
+<p class="fablfunction">collectFunctions(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => SeqOf(fabl:Function)</p>
+<a name="function_collectGlobals"/>
+<p class="fablfunction">collectGlobals(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => SeqOf(fabl:Binding)</p>
+<a name="function_collectProperties"/>
+<p class="fablfunction">collectProperties(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => SeqOf(<a href = "/manual-2.0.10/owl.html#Property">rdf:Property</a>)</p>
+<a name="function_docClass"/>
+<p class="fablfunction">docClass(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_docFunction"/>
+<p class="fablfunction">docFunction(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Function) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_docGlobal"/>
+<p class="fablfunction">docGlobal(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Binding) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_docHeader0"/>
+<p class="fablfunction">docHeader0(<a href = "/manual-2.0.10/string.html">xsd:string</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_docProperty"/>
+<p class="fablfunction">docProperty(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/owl.html#Property">rdf:Property</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_docRestrictions"/>
+<p class="fablfunction">docRestrictions(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/owl.html#Property">rdf:Property</a>,SeqOf(owl:Restriction)) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_documentation"/>
+<p class="fablfunction">documentation(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>,<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_emitComment"/>
+<p class="fablfunction">emitComment(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/string.html">xsd:string</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_functionDescription"/>
+<p class="fablfunction">functionDescription(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Function,SeqOf(<a href = "/manual-2.0.10/id.html">fabl:id</a>),<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_functionLink"/>
+<p class="fablfunction">functionLink(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Function) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_functionText"/>
+<p class="fablfunction">functionText(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Function,<a href = "/manual-2.0.10/string.html">xsd:string</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_genLink"/>
+<p class="fablfunction">genLink(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Function) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_genNamespaceDoc"/>
+<p class="fablfunction">genNamespaceDoc(<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_genNamespaceDoc1"/>
+<p class="fablfunction">genNamespaceDoc1(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_globalEntry"/>
+<p class="fablfunction">globalEntry(<a href = "/manual-2.0.10/id.html">fabl:id</a>,<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<a name="function_globalEntry"/>
+<p class="fablfunction">globalEntry(<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<a name="function_globalLink"/>
+<p class="fablfunction">globalLink(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_globalName"/>
+<p class="fablfunction">globalName(fabl:Binding) => <a href = "/manual-2.0.10/id.html">fabl:id</a></p>
+<a name="function_macroDescription"/>
+<p class="fablfunction">macroDescription(<a href = "/manual-2.0.10/string.html">xsd:string</a>,fabl:Function,<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_mkManualEntry"/>
+<p class="fablfunction">mkManualEntry(<a href = "/manual-2.0.10/id.html">fabl:id</a>,<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/lib/fabldoc/1.0/revision1.fabldoc.html#class_ManualEntry">fabldoc:ManualEntry</a></p>
+<a name="function_mkManualEntry"/>
+<p class="fablfunction">mkManualEntry(<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/lib/fabldoc/1.0/revision1.fabldoc.html#class_ManualEntry">fabldoc:ManualEntry</a></p>
+<a name="function_nonRestrictionSuperclasses"/>
+<p class="fablfunction">nonRestrictionSuperclasses(<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>) => SeqOf(<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>)</p>
+<a name="function_setDocumentor"/>
+<p class="fablfunction">setDocumentor(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>,<a href = "/manual-2.0.10/id.html">fabl:id</a>) => <a href = "/manual-2.0.10/void.html">fabl:void</a></p>
+<a name="function_stdDocFile"/>
+<p class="fablfunction">stdDocFile(<a href = "/manual-2.0.10/string.html">xsd:string</a>,<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>) => <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<a name="globals"/><p><b>----GLOBALS---</b></p>
+<p style="globalheader"><a name="global_borderStyle"><b>Global variable borderStyle</b></p><p>Type: <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_cPageId"><b>Global variable cPageId</b></p><p>Type: <a href = "/manual-2.0.10/id.html">fabl:id</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_docLinkRoot"><b>Global variable docLinkRoot</b></p><p>Type: <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_docRoot"><b>Global variable docRoot</b></p><p>Type: <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_globalEntries"><b>Global variable globalEntries</b></p><p>Type: <a href = "/manual-2.0.10/resources.html">rdfs:Resource</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_libCopyrightDiv"><b>Global variable libCopyrightDiv</b></p><p>Type: <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_libMainDiv"><b>Global variable libMainDiv</b></p><p>Type: <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_manualLink"><b>Global variable manualLink</b></p><p>Type: <a href = "/manual-2.0.10/string.html">xsd:string</a></p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_namesBuf"><b>Global variable namesBuf</b></p><p>Type: SeqOf(<a href = "/manual-2.0.10/id.html">fabl:id</a>)</p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_path"><b>Global variable path</b></p><p>Type: SeqOf(<a href = "/manual-2.0.10/resources.html">rdfs:Resource</a>)</p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_theClasses"><b>Global variable theClasses</b></p><p>Type: SeqOf(<a href = "/manual-2.0.10/owl.html#Class">rdfs:Class</a>)</p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_theFunctions"><b>Global variable theFunctions</b></p><p>Type: SeqOf(fabl:Function)</p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_theGlobals"><b>Global variable theGlobals</b></p><p>Type: SeqOf(<a href = "/manual-2.0.10/id.html">fabl:id</a>)</p>
+<p class="separator"></p>
+<p style="globalheader"><a name="global_theMacros"><b>Global variable theMacros</b></p><p>Type: SeqOf(fabl:Function)</p>
+<p class="separator"></p>
+<div style="text-align:center;position:static;width:98%;padding-left:2em;padding-right-2em;height:3em;padding-top:1em;padding-bottom:1em;"><center><span style="font-size: 7pt;">©Copyright 2003, 2004 Map Bureau. All rights reserved.</span></center></div></body>
+</html>

@@ -1,0 +1,42 @@
+/*
+* Copyright (C) 2004 Map Bureau - http://www.mapbureau.com
+*
+* This package is Free Software released under the BSD license.
+*
+* See license.html at the top of this package for the full license terms.
+*
+*/
+/*
+compile("file://../lib/geography/map/1.1/revision1.fb","file://../lib/geography/map/1.1/revision1.v1.fbl");
+*/
+
+install(namespace('discovery1'));
+discovery1:namespaces();
+discovery1:discovery();
+
+installDependencies(namespace('map'));
+
+
+
+setTopic(namespace('map'));
+startCollectingTriples();
+
+
+
+class("map:Map");
+restrict map:coverage {cardinality 1;allValuesFrom geom2d:Box}
+restrict map:extent {cardinality 1;allValuesFrom geom2d:Box}
+restrict map:tilings {maxCardinality 1;allValuesFrom rdf:Seq}
+endClass();
+
+
+class("map:Tiling");
+restrict map:tilingId {cardinality 1;allValuesFrom string}
+restrict map:tilingOrigin {cardinality 1;allValuesFrom geom2d:Point}
+restrict map:tileSize {cardinality 1;allValuesFrom double}
+restrict map:tileIncrement {cardinality 1;allValuesFrom double}
+restrict map:tilingExtent {cardinality 1;allValuesFrom geom2di:Box}
+endClass();
+
+
+

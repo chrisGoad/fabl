@@ -1,0 +1,347 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Load/Store</span></center><p style="height:1em"></p><p>Data stored externally by Fabl (like the data within a Fabl invocation) takes the form
+of a set of RDF triples.  Fabl supports the most widely used format for external storage, <a href="http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/">RDF/XML</a> 
+and also
+defines its own binary format, referred to as  "RDF/FB" (FB for "Fabl Binary").  
+RDF/FB is compact, and
+loads efficiently (currently at about 500,000 triples/second on a Pentium 2Ghz processor).
+The major part of the Fabl implementation itself is stored as an RDF/FB file.</p>
+
+
+<p>Fabl uses the <a href="http://www.redland.opensource.ac.uk/raptor/">Raptor RDF parser</a> for loading the RDF/XML format.
+The Raptor parser supports three additional syntactic variants: <a href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntriples">N-triples</a>,
+<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">turtle</a> (Terse RDF Triple Language),
+and "RSS tag soup" (for RSS versions other than the RDF-based <a href="http://web.resource.org/rss/1.0/">RSS 1.0</a>).  
+Support for loading, but not storing, these variants  is also provided in Fabl, designated
+by "ttl", and "rss", respectively.
+
+
+<p class="subheading">Pages</p>
+
+
+
+<p>A crucial aspect of serializing RDF is determining what set of triples to include in
+the serialization.  (Serialization is the process of converting a non-linear structure
+such as an RDF graph into a sequence of primitive elements - characters or bytes - 
+for storage or transmission). If all of the  triples emanating from an object 
+are followed recursively, the resulting set of triples will usually be be too large -
+for example, it will likely include chunks of standard vocabularies arrived at by traversing
+rdf:type and rdfs:subClassOf properties, leading to traversal of parts of the
+standard rdf,rdfs, and xsd vocabularies.</p>
+
+<p>
+Fabl uses two mechanisms to address this issue. First,  each 
+triple and each resource in its
+store is assigned to a numbered "page"; the page mechanism is described in this
+section. The  second mechanism, discussed in the next section, involves
+designation of resources as "persistent" or "transient". </p>
+
+<p>The partition of the Fabl store into pages
+is somewhat similar in effect to partitioning RDF content into a set of separate files.
+To serialize  a resource R relative to a page P, 
+the graph is traversed starting from R along edges (ie triples)
+which lie on P. Only those edges reached during this traversal
+are serialized: ie, those triples that are on P, and also reachable from
+R via other triples on P.</p>
+
+<p>New triples and new resources created during computation are allocated to the <b>current page</b>.
+Note that a resource may be the subject of triples from different pages.
+Traversal of triples on a page will often pass through resources from other pages.
+The following functions query and set the current page:</p><a name="currentPage">
+<p class="fablfunction">int currentPage()
+</p></a>
+<a name="setCurrentPage_int">
+<p class="fablfunction">void setCurrentPage(int pg)
+</p></a>
+<p> and the following function returns the page to which <b>rsr</b> has been allocated</p><a name="page_ob">
+<p class="fablfunction">int page(Resource rsr)
+</p></a>
+<p><b>newPage</b> allocates an unused page (one which has not
+been the current page during the computation so far), and assigns it as the current page:</p><a name="newPage">
+<p class="fablfunction">int newPage()
+</p></a>
+
+<p>Now, the function </p>
+
+
+<a name="store_string_string_ob_int">
+<p class="fablfunction">void store(string fln,string syntax,Resource rsr,int pg)
+</p></a>
+<p>saves  the  resource <b>rsr</b> 
+to 
+the file <b>fln</b>, traversing and saving those triples 
+that lie on  page <b>pg</b>.  <b>fln</b>, as usual, should be  given in URL form, eg,
+"file:///usr/local/fabl-2.0.11/example/test.fb". <b>syntax</b> specifies which syntax
+is to be used. The alternatives are "xml"  and "fb". </p>
+<p>Files that include definitions of
+Fabl functions should be stored using "fb" format.  The Fabl XML serializer does not currently
+handle storage of code (it does not complain, but emits no content representing code).
+This is not of practical importance, since only Fabl
+can make use of Fabl code, and in any case FB is much faster to store and load when
+dealing with Fabl-specific content.
+</p>
+
+
+The variant</p><a name="store_string_ob_int">
+<p class="fablfunction">void store(string fln,Resource rsr,int int)
+</p></a>
+<p>determines the syntax from the extension of <b>fln</b>.  The extensions ".xml" or ".rdf" signify
+RDF/XML syntax, and ".fb" signifies RDF/FB. </p>
+<p>The variants</p><a name="store_string_string_ob">
+<p class="fablfunction">void store(string fln,string syntax,Resource rsr)
+</p></a>
+<a name="store_string_ob">
+<p class="fablfunction">void store(string fln,Resource rsr)
+</p></a>
+<p>use <b>page(rsr)</b> as the page for traversal.</p>
+
+<p class="subheading">Persistence</p>
+
+<p>The function,</p>
+<a name="store_int_string_string">
+<p class="fablfunction">void store(int pg,string fln,string syntax)
+</p></a>
+<p>
+stores the contents of page <b>pg</b> in the file <b>fl</b> using the specified
+<b>syntax</b>. The variant</p><a name="store_int_string">
+<p class="fablfunction">void store(int pg,string fln)
+</p></a>
+<p>Determines the syntax from <b>fln</b> in the usual manner.
+
+However, neither variant stores every triple on the page, because some of the
+content of each page typically consists  of intermediate computational results that are of no
+long term interest.  The persistence mechanism allows the programmer to designate
+some resources as candidates for serialization; resources that have not been so designated
+are referred to as "transient". </p>
+
+<p>Here are the details. The function</p><a name="declarePersistent_ob">
+<p class="fablfunction">boolean declarePersistent(Resource rsr)
+</p></a>
+<p>designates  <b>rsr</b> as persistent, while</p><a name="persistent">
+<p class="fablfunction">boolean persistent(Resource rsr)
+</p></a>
+<p>returns a boolean indicating whether <b>rsr</b> is persistent. </p>
+
+<p> Now, 
+The rule for selecting which triples on the page are to be serialized by <b>store[int,string]</b>
+and <b>store[int,string,string]</b> 
+can be formulated
+approximately as "serialize every triple on the page that is relevant to persistent resources".
+Stated more precisely, the selection process involves first finding the
+set of persistent resources that are subjects of triples on the page.
+These resources are called the  "persistent roots" of the page. Then,
+the triple graph is traversed along edges (triples) that belong to the page;
+all triples so traversed are stored.  Thus, in effect, any resource, persistent or not, that is reachable on the page from
+persistent resources is serialized.</p>
+
+
+
+
+
+
+
+
+<p class="subheading">Load</p>
+<p>The function </p><a name="load_string_string">
+<p class="fablfunction">Resource load(string url,string syntax)
+</p></a>
+<p>loads triples from <b>url</b> in the given <b>syntax</b>. The permissable values of <b>syntax</b>
+are "fb","xml", "nt","ttl", and "rss".</p>
+
+
+The variant </p><a name="load_string">
+<p class="fablfunction">Resource load(string url)
+</p></a>
+<p>determines the syntax from the extension of <b>fln</b>; as with <b>store</b>, the extension
+".rdf" is taken to indicate RDF/XML syntax.</p>
+
+<p>If the file being loaded was created by storing a resource (ie store or ) rather than a page,
+then the value returned by <b>load</b> is the stored resource.</p>
+
+
+
+
+
+
+
+
+<p>The property <b>fabl:hasBeenLoaded</b> of the resource denoted
+by <b>url</b> is set to <b>true</b> after loading.  So, for example,</p>
+
+<pre>
+var tstfl = "file://../lib/geometry/1.1/revision2.fb";
+load(tstfl);
+resource(tstfl).fabl:hasBeenLoaded;
+-->true
+</pre>
+
+
+<p>The variants</p><a name="loadOnce_string_string">
+<p class="fablfunction">Resource loadOnce(string url,string syntax)
+</p></a>
+<p>and</p><a name="load_string">
+<p class="fablfunction">Resource loadOnce(string url)
+</p></a>
+<p>retrieve the contents of a url once; if the
+resource denoted by a url has a true value for the property
+<b>fabl:hasBeenLoaded</b>, subsequent invocations of <b>loadOnce</b> on this resource will have no effect. </p>
+
+<p>The variant</p><a name="load_seqob_string_string">
+<p class="fablfunction">Resource load(SeqOf(Resource) subjects,string url,string syntax)
+</p></a>
+<p>adds into <b>subjects</b> all of those resources that are the subjects of triples
+in the loaded file. Variants that collect subjects are available for the other argument patterns
+for <b>load</b> and <b>loadOnce</b>:</p><a name="load_seqob_string">
+<p class="fablfunction">Resource load(SeqOf(Resource) subjects,string url)
+</p></a>
+<a name="loadOnce_seqob_string_string">
+<p class="fablfunction">Resource loadOnce(SeqOf(Resource) subjects,string url,string syntax)
+</p></a>
+<a name="loadOnce_seqob_string">
+<p class="fablfunction">Resource loadOnce(SeqOf(Resource) subjects,string url)
+</p></a>
+
+
+<p class="subheading">Install</p>
+<p>The property <a href = "http://www.w3.org/TR/rdf-schema/#ch_isdefinedby">rdfs:isDefinedBy</a>
+tells 
+where a definition of a resource can be found. <b>rdfs:isDefinedBy</b> can have multiple values,
+meaning that definitions can be spread across multiple files.  The function </p><a name="install_ob">
+<p class="fablfunction">void install(Resource x)
+</p></a>
+<p>loads all resources 
+that are values of <b>x..rdfs:isDefinedBy</b>. It returns true if <b>rdfs:isDefinedBy</b> has
+at least one value, so that there is something to load. For example:</p>
+
+<pre>
+namespace('geom').rdfs:isDefinedBy = 
+   resource("http://fabl.net/lib/geometry/1.1/revision1.fb");
+install(namespace('geom'));
+</pre>
+
+<p>has the same effect as</p>
+
+<pre>
+loadOnce("http://fabl.net/lib/geometry/1.1/revision1.fb");
+</pre>
+
+<p>The variant</p><a name="install_string">
+<p class="fablfunction">void install(string ns)
+</p></a>
+<p>installs the namespace with prefix <b>ns</b>. So, for example,
+
+<pre>
+install(namespace("geom"));
+</pre>
+
+<p>and</p>
+
+<pre>
+install("geom");
+</pre>
+
+<p>are equivalent.</p>
+
+<p>The function,</p><a name="einstall_ob">
+<p class="fablfunction">void reinstall(Resource x)
+</p></a>
+reloads the resources that are values of  <b>x..rdfs:isDefinedBy</b>.</p>
+
+<p>All variants of <b>load</b>,<b>loadOnce</b>,<b>install</b>,and <b>reInstall</b> allocate
+a new page for the triples added from the loaded file.</p><p class="subheading">Compilation</p>
+
+<p>The function </p><a name="compile_string_string">
+<p class="fablfunction">void compile(string dest,string src)
+</p></a>
+sets the current page to a new value, 
+loads the contents of the file <b>src</b>, and then stores that new page to <b>dest</b>.
+So, compilation is a way of converting triples from one format to another.
+Typically, <b>dest</b> is an <b>.fb</b> file, while <b>src</b> is a 
+<b>.fbl</b>, <b>.xml</b>, or <b>.ttl</b> file. </p>
+
+
+<p> Compilation is of particular practical imporance when the source file is
+in <b>fbl</b> syntax and contains definitions of functions, and the destination is an
+<b>fb</b> file.
+In <b>fb</b>,
+
+programs are represented in their byte-code  form. The efficiency of running the code is not affected,
+but load time is reduced by a factor of  more than 100. For example, the Fabl self-implementation takes
+about 30 seconds to load as source, but about 1/20th of a second in its binary form on a 2ghz Pentium.<p>
+
+<p>For an example of compilation, consider the source file:</p>
+
+<p><a href="http://fabl.net/lib/geometry/1.1/revision2.fbl">http://fabl.net/lib/geometry/1.1/revision2.fbl</a></p>
+
+<p>  The following
+command compiles the file:</p>
+
+<pre>
+compile("file://../lib/geometry/1.1/revision2.fb","file://../lib/geometry/1.1/revision2.fbl");
+</pre>
+
+
+</div>
+</body>
+</html>

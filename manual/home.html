@@ -1,0 +1,153 @@
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+<HEAD>
+<TITLE>Fabl Manual</TITLE>
+<link rel="stylesheet" type="text/css" href="style.css">
+<META name="description" content="Fabl Manual">
+<META name="keywords" content="RDF Fabl">
+</HEAD>
+<BODY>
+<div  class="titlebar" style="vertical-align:baseline;position:absolute;width:95%;height:1em;top:0.5em;right:auto;bottom:auto;left:auto">
+<div style="position:absolute;left:2%;bottom:0em"><b>The Fabl Manual</b></div>
+<div style="position:absolute;left:40%"><a class="titlelink" href="functionindex.html">Function Index</a></div>
+<div style="position:absolute;left:55%"><a class="titlelink" href="classindex.html">Class Index</a></div>
+<div style="position:absolute;left:67%"><a class="titlelink" href="globalindex.html">Globals Index</a></div>
+<div style="position:absolute;left:81%"><a class="titlelink" href="../lib/index.html">Libraries</a></div>
+</div><div class = "topbar" style="position:absolute;width:95%;height:1em;top:2.000000em;right:auto;bottom:auto;left:auto"></div>
+<div style=";position:absolute;width:12em;height:auto;top:4.000000em;padding-bottom:3em">
+<b>Contents</b><br/><br/><div><a href = "index.html">Title Page</a></div>
+<div><a href = "intro.html">Introduction</a></div>
+<div><a href = "sample_code.html">Sample Code</a></div>
+<div><a href = "architecture.html">Architecture</a></div>
+<div><a href = "syntax.html">Syntax</a></div>
+<div><a href = "strongTyping.html">Strong Typing</a></div>
+<div><a href = "polymorphism.html">Polymorphism</a></div>
+<div><a href = "operators.html">Operators</a></div>
+<div><a href = "help.html">Help</a></div>
+<div><a href = "progenv.html">Errors</a></div>
+<div><a href = "config.html">Configuration</a></div>
+<div><a href = "rdf.html">RDF</a></div>
+<div><a href = "namespaces.html">Namespaces</a></div>
+<div><a href = "owl.html">Owl</a></div>
+<div><a href = "datatypes.html">Datatypes</a></div>
+<div><a href = "resources.html">Resources</a></div>
+<div><a href = "dot.html">Dot ops</a></div>
+<div><a href = "coercion.html">Coercion</a></div>
+<div><a href = "cast.html">Type Casting</a></div>
+<div><a href = "nill.html">nil</a></div>
+<br/><div><b>Types</b></div><div style="margin-left:10px"><a href = "string.html">string</a></div>
+<div style="margin-left:10px"><a href = "id.html">id</a></div>
+<div style="margin-left:10px"><a href = "int.html">int</a></div>
+<div style="margin-left:10px"><a href = "double.html">double</a></div>
+<div style="margin-left:10px"><a href = "boolean.html">boolean</a></div>
+<div style="margin-left:10px"><a href = "literal.html">Literal</a></div>
+<div style="margin-left:10px"><a href = "container.html">Containers</a></div>
+<div style="margin-left:10px"><a href = "function.html">Functions</a></div>
+<div style="margin-left:10px"><a href = "void.html">void</a></div>
+<br/><div><a href = "home.html">Home</a></div>
+<div><a href = "regarding.html">Regarding</a></div>
+<div><a href = "path.html">The Path</a></div>
+<div><a href = "class.html">Classes</a></div>
+<div><a href = "delegation.html">Delegation</a></div>
+<div><a href = "functional.html">Functional Values</a></div>
+<div><a href = "write.html">Read/Write</a></div>
+<div><a href = "store.html">Load/Store</a></div>
+<div><a href = "libraries.html">Libraries</a></div>
+<div><a href = "imports.html">Imports</a></div>
+<div><a href = "cgi.html">CGI</a></div>
+</div>
+<div style=";position:absolute;top:4.000000em;left:14em;width:auto;height:auto;padding-bottom:3em">
+<center><span class="title">Home</span></center><p style="height:1em"></p><p>The <b>home resource</b> is the resource to which Fabl adds new globals and
+functions. The function  </p><a name="setHome_string">
+<p class="fablfunction">void setHome(Resource x)
+</p></a>
+<p>sets the home to <b>x</b>. Here's an example:</p>
+
+
+<pre class=longpre>
+allocate("ex:home1");
+setHome(ex:home1);
+var abc = 234;
+</pre>
+<p>This adds the global <b>abc</b> to the resource <b>ex:home1</b>. (As will be explained
+in the <a href="regarding.html">next section</a>, the underlying RDF action involves 
+setting the value of the  property <b>regarding('abc')</b> on the resource
+<b>ex:home1</b> to 234.)</p>
+
+
+<p>Continuing the example:</p>
+
+
+<pre class=longpre>
+allocate("ex:home2");
+setHome(ex:home2);
+var abc = "hello from home2";
+</pre>
+<p>
+
+adds <b>abc</b> to the namespace <b>ex:home2</b> with a different value and type.</p>
+
+Then,<p>
+
+<pre class=longpre>
+setHome(ex:home1);
+abc;
+--> 234
+setHome(ex:home2);
+abc;
+--> hello from home2
+
+</pre><p>
+
+
+<b>setHome</b>  may be passed a namespace prefix, as in</p>
+
+<pre>
+setHome('ex');
+</pre>
+
+<p>with an effect identical to</p>
+
+<pre>
+setHome(namespace('ex'));
+</pre>
+
+
+<p>The function<p><a name="lastHome">
+<p class="fablfunction">void lastHome()
+</p></a>
+<p>sets the home resource to the resource that was home
+prior to execution of the last <b>setHome</b>.
+Example:</p>
+
+<pre class=longpre>
+setHome(ex:home1);// now ex:home1 is home
+setHome(ex:home2);// and now ex:home2
+lastHome();  // back to ex:home1
+</pre>
+<p>
+<a name="newHome">
+<p class="fablfunction">Resource newHome()
+</p></a>
+<p>
+returns an anonymous resource (ie an object with no URI) that is suitable for use as a home resource.
+(Home resources require initialization of the <b>path</b> and <b>namespaces</b> properties;
+this initialization is performed by <b>newHome</b>.)
+</p>
+
+<p> The special namespace <b>home:</b> is allocated to the home resource. For example,</p>
+
+<pre class=longpre>
+allocate("home:myprop",Property);
+</pre>
+
+<p>allocates <b>myprop</b>  under the home resource, whatever that happens to be.</p>
+
+<p>Also, the global variable <b>home</b> evaluates to the home resource.</p>
+
+</div>
+</body>
+</html>

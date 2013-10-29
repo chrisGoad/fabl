@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE uridef[
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">  
+  <!ENTITY geo "http://www.w3.org/2003/01/geo/wgs84_pos#">
+  <!ENTITY geom "http://fabl.net/vocabularies/geometry/1.1/">
+  <!ENTITY geom2d "http://fabl.net/vocabularies/geometry2d/1.1/">
+]>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:owl="http://www.w3.org/2002/07/owl#"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  
+  
+  <owl:Ontology rdf:about="&geom;index.owl"/> 
+
+  
+  <owl:Ontology rdf:about="http://fabl.net/vocabularies/geometry2d/1.1">
+     <rdfs:label>RDF 2D Geometry</rdfs:label>
+ <rdfs:comment>created 2004-10-27; author Chris Goad cagoad@yahoo.com </rdfs:comment>
+        <owl:imports rdf:resource="&geom;index.owl"/> 
+ 
+  </owl:Ontology>
+
+
+
+<owl:Class  rdf:about="&geom2d;Shape">
+<rdfs:subClassOf rdf:resource="&geom;Shape"/>
+<rdfs:comment>The class of all 2d Shapes</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;Point">
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;x"/>
+<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;y"/>
+<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom;Point"/>
+<rdfs:subClassOf rdf:resource="&geom2d;Shape"/>
+</owl:Class>
+
+<owl:Class  rdf:about="&geom2d;Transformation">
+<rdfs:subClassOf rdf:resource="&geom;Transformation"/>
+<rdfs:comment>The class of all functions with geom2d:Point as domain and range</rdfs:comment>
+</owl:Class>
+  
+  
+<owl:DatatypeProperty rdf:about="&geom2d;a">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+
+<owl:DatatypeProperty rdf:about="&geom2d;a">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+<owl:DatatypeProperty rdf:about="&geom2d;b">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+<owl:DatatypeProperty rdf:about="&geom2d;c">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+<owl:DatatypeProperty rdf:about="&geom2d;d">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+<owl:DatatypeProperty rdf:about="&geom2d;e">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+  
+<owl:DatatypeProperty rdf:about="&geom2d;f">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+
+<owl:Class  rdf:about="&geom2d;Matrix">
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;a"/>
+<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;b"/>
+<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;c"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;d"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;e"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;f"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;Transformation"/>
+<rdfs:comment>Corresponds to the matrix transform definition in SVG</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;Group">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;elements"/>
+<owl:allValuesFrom rdf:resource="&rdf;Seq"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;elements"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom;Group"/>
+<rdfs:subClassOf rdf:resource="&geom2d;Shape"/>
+</owl:Class>
+
+<owl:Class  rdf:about="&geom2d;Curve">
+<rdfs:subClassOf rdf:resource="&geom2d;Shape"/>
+<rdfs:subClassOf rdf:resource="&geom;Curve"/>
+</owl:Class>
+
+
+
+<owl:DatatypeProperty rdf:about="&geom2d;u">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+<owl:DatatypeProperty rdf:about="&geom2d;v">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+<owl:DatatypeProperty rdf:about="&geom2d;w">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+<rdfs:range rdf:resource="&xsd;double"/>
+</owl:DatatypeProperty>
+  
+  
+
+<owl:Class  rdf:about="&geom2d;Line">
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;u"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;v"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;w"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:comment>The set of points (x,y) satisfying the equation  u*x + v*y + w = 0</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;Ray">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;direction"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;direction"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:comment>The set of points (x,y) of the form end0 + t*direction, for t &gt;= 0</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;CurveSegment">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end1"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end1"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;Curve"/>
+<rdfs:subClassOf rdf:resource="&geom;CurveSegment"/>
+</owl:Class>
+<owl:Class  rdf:about="&geom2d;ClosedCurve">
+<rdfs:subClassOf rdf:resource="&geom2d;Curve"/>
+<rdfs:subClassOf rdf:resource="&geom;ClosedCurve"/>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;FilledCurve">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;boundary"/>
+<owl:allValuesFrom rdf:resource="&geom2d;ClosedCurve"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;boundary"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;Shape"/>
+<rdfs:comment>The interior of a non-self-intersecting ClosedCurve</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;LineSegment">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end0"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end1"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;end1"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;CurveSegment"/>
+<rdfs:subClassOf rdf:resource="&geom;LineSegment"/>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;Polyline">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;points"/>
+<owl:allValuesFrom rdf:resource="&rdf;Seq"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;points"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;Curve"/>
+<rdfs:subClassOf rdf:resource="&geom;Polyline"/>
+</owl:Class>
+
+<owl:Class  rdf:about="&geom2d;Polygon">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;boundary"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Polyline"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;boundary"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;FilledCurve"/>
+<rdfs:comment>A FilledCurve whose boundary is a Polyline</rdfs:comment>
+</owl:Class>
+
+
+<owl:DatatypeProperty rdf:about="&geom2d;pathData"/>
+  
+<owl:Class  rdf:about="&geom2d;SVGPath">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;pathData"/>
+<owl:allValuesFrom rdf:resource="&xsd;string"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom2d;pathData"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:comment>A curve defined using the SVG path syntax</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;Box">
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;xmin"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;xmax"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;ymin"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;ymax"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf rdf:resource="&geom2d;Shape"/>
+<rdfs:subClassOf rdf:resource="&geom;Box"/>
+</owl:Class>
+
+
+<owl:Class  rdf:about="&geom2d;Circle">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;center"/>
+<owl:allValuesFrom rdf:resource="&geom2d;Point"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;center"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;radius"/>
+<owl:allValuesFrom rdf:resource="&xsd;double"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="&geom;radius"/>
+<owl:cardinality rdf:datatype="&xsd;int">1</owl:cardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+</rdf:RDF>

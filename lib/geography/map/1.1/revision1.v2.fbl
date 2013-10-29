@@ -1,0 +1,47 @@
+/*
+* Copyright (C) 2004 Map Bureau - http://www.mapbureau.com
+*
+* This package is Free Software released under the BSD license.
+*
+* See license.html at the top of this package for the full license terms.
+*
+*/
+/*
+compile("file://../lib/geography/map/1.1/revision1.fb","file://../lib/geography/map/1.1/revision1.v2.fbl");
+*/
+
+install(namespace('discovery1'));
+discovery1:namespaces();
+discovery1:discovery();
+
+installDependencies(namespace('map'));
+
+
+
+setTopic(namespace('map'));
+startCollectingTriples();
+
+
+
+class("map:Map");
+restrict dc:identifier {maxCardinality 1;allValuesFrom id}
+restrict map:basemap {cardinality 1;allValuesFrom rdfs:Resource}
+restrict map:srs {cardinality 1;allValuesFrom rdfs:Resource}
+restrict map:coverage {cardinality 1;allValuesFrom geom2d:Box}
+restrict map:extent {cardinality 1;allValuesFrom geom2d:Box}
+endClass();
+
+
+class("map:Tiling");
+restrict map:tileUrlRoot {cardinality 1;allValuesFrom string}
+restrict map:tileUrlExtension {cardinality 1;allValuesFrom string}
+restrict map:tilingOrigin {cardinality 1;allValuesFrom geom2d:Point}
+restrict map:tileCoverage {cardinality 1;allValuesFrom double}
+restrict map:tileExtent {cardinality 1;allValuesFrom double}
+//restrict map:tileIncrement {cardinality 1;allValuesFrom double} // increment in coverage space
+endClass();
+
+
+map:Tiling..rdfs:subClassOf = map:Map;
+
+

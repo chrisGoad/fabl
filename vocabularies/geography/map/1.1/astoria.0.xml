@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:map="http://fabl.net/vocabularies/geography/map/1.1/"
+xmlns:geom="http://fabl.net/vocabularies/geometry/1.1/"
+xmlns:geom2d="http://fabl.net/vocabularies/geometry2d/1.1/"
+>
+<map:Map>
+<map:image rdf:resource="http://www.mapbureau.com/basemaps/astoriabase.swf"/>
+<map:thumbnail rdf:resource="http://www.mapbureau.com/basemaps/astoriathumb.jpg"/>
+<dc:title>Map of Astoria, Oregon</dc:title>
+<map:srs rdf:resource="http://fabl.net/vocabularies/geography/SRSCatalog/utm10n"/>
+<map:extent>
+<geom2d:Box>
+<geom:xmin>0</geom:xmin>
+<geom:xmax>521</geom:xmax>
+<geom:ymin>-270.8</geom:ymin>
+<geom:ymax>0</geom:ymax>
+</geom2d:Box>
+</map:extent>
+<map:coverage>
+<geom2d:Box>
+<geom:xmin>433000</geom:xmin>
+<geom:ymin>5113200</geom:ymin>
+<geom:xmax>440600</geom:xmax>
+<geom:ymax>5117150</geom:ymax>
+</geom2d:Box>
+</map:coverage>
+</map:Map>
+</rdf:RDF>
